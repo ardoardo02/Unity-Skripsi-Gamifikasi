@@ -855,9 +855,9 @@ RectTransform:
   m_Father: {fileID: 1223332240}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 567.5, y: -540}
   m_SizeDelta: {x: 492, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &509246433
@@ -893,9 +893,9 @@ RectTransform:
   m_Father: {fileID: 2075573886}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -235}
   m_SizeDelta: {x: 700, y: 440}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &509246435
@@ -918,9 +918,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Ada seorang anak laki-laki kecil yang tinggal di desa kecil di Indonesia,
-    namanya (nama kamu). (nama kamu) suka banget dengan lantunan Al-Quran dan mempunyai
-    mimpi untuk tampil di kompetisi lantunan Al-Quran setiap tahunnya di desanya.
+  m_text: 'Ada seorang anak <b>laki-laki</b> kecil yang tinggal di desa kecil di
+    Indonesia, namanya <b><color=#00AAAB>(nama kamu)</color></b>. <b><color=#00AAAB>(nama
+    kamu)</color></b> suka banget dengan lantunan <b>Al-Quran</b> dan mempunyai mimpi
+    untuk tampil di kompetisi lantunan <b>Al-Quran</b> setiap tahunnya di desanya.
     Kompetisinya tuh keren banget dan banyak banget orang dari desa dan kota-kota
     tetangga yang datang nonton.
 
@@ -1018,7 +1019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &535663818
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1032,7 +1033,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1478466287}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1680,7 +1681,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1694,7 +1695,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1184523252}
   m_OnClick:
     m_PersistentCalls:
@@ -1770,9 +1771,9 @@ RectTransform:
   m_Father: {fileID: 2075573886}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -620}
   m_SizeDelta: {x: 700, y: 330}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1214778855
@@ -1795,10 +1796,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tapi tentu saja, nggak gampang banget buat  (nama kamu) buat siap-siap
-    tampil di sana. Dia harus hafal Al-Quran sampai mampu mengesankan. Hanya dalam
-    beberapa bulan,  (nama kamu) memulai rutinitasnya untuk menghafal ayat-ayat Al-Quran
-    setiap hari.
+  m_text: Tapi tentu saja, nggak gampang banget buat  <b><color=#00AAAB>(nama kamu)</color></b>
+    buat siap-siap tampil di sana. Dia harus hafal <b>Al-Quran</b> sampai mampu mengesankan.
+    Hanya dalam beberapa bulan,  <b><color=#00AAAB>(nama kamu)</color></b> memulai
+    rutinitasnya untuk menghafal ayat-ayat <b>Al-Quran</b> setiap hari.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 984f61582a098684d9766bb5fda5f0ab, type: 2}
   m_sharedMaterial: {fileID: 4206139779931759365, guid: 984f61582a098684d9766bb5fda5f0ab, type: 2}
@@ -2167,9 +2168,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 535663818}
-  - {fileID: 90947959}
   - {fileID: 1698355924}
+  - {fileID: 90947959}
+  - {fileID: 535663818}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2277,7 +2278,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1698355924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2293,7 +2294,7 @@ RectTransform:
   - {fileID: 759656914}
   - {fileID: 1223332240}
   m_Father: {fileID: 1478466287}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2456,9 +2457,9 @@ RectTransform:
   m_Father: {fileID: 1223332240}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1248.5, y: -540}
   m_SizeDelta: {x: 700, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2075573887
