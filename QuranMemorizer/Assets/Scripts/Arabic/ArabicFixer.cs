@@ -63,7 +63,6 @@ public class ArabicFixer : MonoBehaviour
         if (!isInitilized)
             return;
 
-
         // if No Need to Refresh
         if (OldText == fixedText &&
             OldFontSize == textComponent.fontSize &&
@@ -72,7 +71,7 @@ public class ArabicFixer : MonoBehaviour
             (OldScreenRect.x == Screen.width && OldScreenRect.y == Screen.height &&
             !CheckRectTransformParentsIfChanged()))
             return;
-
+        
         FixTextForUI();
         OldText = fixedText;
         OldFontSize = textComponent.fontSize;
