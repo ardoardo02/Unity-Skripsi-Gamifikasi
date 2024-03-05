@@ -14,10 +14,12 @@ public class LevelButtonChild : MonoBehaviour
     
     Color titleColor;
     Color scoreColor;
+    int totalQuestions;
 
     public TMP_Text TitleText { get => titleText; }
     public TMP_Text ScoreText { get => scoreText; }
     public TMP_Text GradeScoreText { get => gradeScoreText; }
+    public int TotalQuestions { get => totalQuestions; }
 
     private void Start()
     {
@@ -28,10 +30,11 @@ public class LevelButtonChild : MonoBehaviour
         scoreColor = scoreText.color;
     }
 
-    public void SetLevelData(int title, int score, string gradeScore, string prevGradeScore)
+    public void SetLevelData(int title, int score, string gradeScore, string prevGradeScore, int totalQuestions)
     {
         TitleText.text = "Ayat " + title;
         scoreText.text = score > 0 ? score.ToString() : "";
+        this.totalQuestions = totalQuestions;
 
         if (prevGradeScore == "") {
             gradeScoreText.text = "";

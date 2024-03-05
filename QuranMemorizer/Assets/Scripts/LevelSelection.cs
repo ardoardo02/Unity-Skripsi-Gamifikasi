@@ -203,7 +203,7 @@ public class LevelSelection : MonoBehaviour
                 
                 // Create a child button for each level
                 GameObject levelButtonChild = Instantiate(LevelButtonChildPrefab, levelButton.transform.parent);
-                levelButtonChild.GetComponent<LevelButtonChild>().SetLevelData(i + 1, level.score[i], CheckGradeScore(level.gradeScore[i]), i == 0 ? "unlock" : CheckGradeScore(level.gradeScore[i-1]));
+                levelButtonChild.GetComponent<LevelButtonChild>().SetLevelData(i + 1, level.score[i], CheckGradeScore(level.gradeScore[i]), i == 0 ? "unlock" : CheckGradeScore(level.gradeScore[i-1]), level.totalQuestions[i]);
                 levelButtonChild.GetComponent<Button>().onClick.AddListener(() => ShowChildLevelData(levelButtonChild.GetComponent<LevelButtonChild>()));
             }
         }
@@ -275,6 +275,7 @@ public class LevelSelection : MonoBehaviour
         }
         PlayerPrefs.SetInt("SurahNumber", int.Parse(surahNumberText.text));
         PlayerPrefs.SetInt("AyahNumber", int.Parse(selectedLevelButtonChild.TitleText.text.Split(' ')[1]));
+        PlayerPrefs.SetInt("TotalQuestions", selectedLevelButtonChild.TotalQuestions);
         // load the game scene
         SceneManager.LoadScene("Gameplay");
     }

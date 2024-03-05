@@ -119,17 +119,20 @@ public class GameManager : MonoBehaviour
             questionBasedOnAyah = questionDatabase.questions.Count;
         }
         // Randomly select a question from the database
-        QuestionDatabase.Question currentQuestion = questionDatabase.questions[Random.Range(0, questionBasedOnAyah)];
+        var currentLevel = questionDatabase.questions[currentSurah];
+        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah)];
+        // var currentQuestion = questionDatabase.questions[currentSurah, Random.Range(0, questionBasedOnAyah)];
 
         // Display question text
         mainQuestionText.text = currentQuestion.mainQuestionText;
         secondaryQuestionText.GetComponent<ArabicFixer>().fixedText = currentQuestion.secondaryQuestionText;
         
         // Get the correct answer
-        multipleChoiceAnswer = questionDatabase.options[currentQuestion.correctAnswerIndex];
+        var currentOptions = questionDatabase.options[currentSurah];
+        multipleChoiceAnswer = currentOptions[currentQuestion.correctAnswerIndex];
 
         // Randomize the options
-        List<string> randomizedOptions = new List<string>(questionDatabase.options);
+        List<string> randomizedOptions = new List<string>(currentOptions);
         randomizedOptions = randomizedOptions.OrderBy(x => UnityEngine.Random.value).ToList(); // Use OrderBy with a random value to shuffle the list
         
         // Display options

@@ -20,27 +20,29 @@ public class QuestionDatabase : MonoBehaviour
     }
 
     // List to store your questions
-    public List<Question> questions = new List<Question>();
+    public Dictionary<int, List<Question>> questions = new Dictionary<int, List<Question>>();
 
     // Shared array of options
-    public string[] options;
+    public Dictionary<int, string[]> options = new Dictionary<int, string[]>();
 
     void Awake()
     {
         // Populate the question database with sample questions and options
-        questions.Add(new Question("What is the capital of", "France", 0));
-        questions.Add(new Question("Which country is known as the", "Land of the Rising Sun", 4));
-        questions.Add(new Question("What is the largest planet in our", "solar system", 8));
-        questions.Add(new Question("Which planet is known as the", "Red Planet", 10));
-        questions.Add(new Question("Who painted the", "Mona Lisa", 16));
-        questions.Add(new Question("Who wrote the famous play", "Romeo and Juliet", 20));
-        questions.Add(new Question("What is the chemical symbol for", "Water", 24));
-        questions.Add(new Question("What is the largest mammal on", "Earth", 28));
-        questions.Add(new Question("Which of the following is NOT", "a primary color", 32));
-        questions.Add(new Question("What is the currency of", "Japan", 36));
+        questions.Add(112, new List<Question>{
+            new Question("What is the capital of", "France", 0),
+            new Question("Which country is known as the", "Land of the Rising Sun", 4),
+            new Question("What is the largest planet in our", "solar system", 8),
+            new Question("Which planet is known as the", "Red Planet", 10),
+            new Question("Who painted the", "Mona Lisa", 16),
+            new Question("Who wrote the famous play", "Romeo and Juliet", 20),
+            new Question("What is the chemical symbol for", "Water", 24),
+            new Question("What is the largest mammal on", "Earth", 28),
+            new Question("Which of the following is NOT", "a primary color", 32),
+            new Question("What is the currency of", "Japan", 36)
+        });
 
         // Set shared options
-        options = new string[] { 
+        options.Add(112, new string[] { 
             "Paris", "London", "Rome", "Berlin", // Question 1, answer index 0
             "Japan", "India", "China", "South Korea", // Question 2, answer index 4
             "Jupiter", "Saturn", "Mars", "Earth", // Question 3, answer index 8
@@ -51,7 +53,7 @@ public class QuestionDatabase : MonoBehaviour
             "Blue Whale", "Elephant", "Giraffe", "Hippopotamus", // Question 8, answer index 28
             "Yellow", "Red", "Blue", "Green", // Question 9, answer index 32
             "Yen", "Dollar", "Euro", "Pound", // Question 10, answer index 36
-        };
+        });
     }
 
     // Example usage
