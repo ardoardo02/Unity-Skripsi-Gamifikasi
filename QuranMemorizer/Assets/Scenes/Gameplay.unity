@@ -419,7 +419,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 83297903}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1432772874}
+        m_TargetAssemblyTypeName: SceneManagement, Assembly-CSharp
+        m_MethodName: LoadToScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Gameplay
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &83297903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3582,6 +3594,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5898899210226183318, guid: a1be634e8d0b4c04aa90bd129e3ff6cd, type: 3}
   m_PrefabInstance: {fileID: 748699224}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &751766794 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8756745283342972897, guid: d91124f2654a3a44b8f5f1082550e6d7, type: 3}
+  m_PrefabInstance: {fileID: 644406885}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &834175617
 GameObject:
   m_ObjectHideFlags: 0
@@ -5567,6 +5584,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 735449571996608137, guid: 3f07fed21eae7c843836bf5bc66b32ea, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 735449571996608137, guid: 3f07fed21eae7c843836bf5bc66b32ea, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1432772874}
+    - target: {fileID: 735449571996608137, guid: 3f07fed21eae7c843836bf5bc66b32ea, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadToScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 735449571996608137, guid: 3f07fed21eae7c843836bf5bc66b32ea, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SceneManagement, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 735449571996608137, guid: 3f07fed21eae7c843836bf5bc66b32ea, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: MainMenu
+      objectReference: {fileID: 0}
     - target: {fileID: 735449572290277275, guid: 3f07fed21eae7c843836bf5bc66b32ea, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6768,6 +6805,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1432772873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1432772875}
+  - component: {fileID: 1432772874}
+  m_Layer: 0
+  m_Name: SceneManagement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1432772874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432772873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 059998ead5f67ec4d9b49ea4f03879c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1432772875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432772873}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1434815669
 GameObject:
   m_ObjectHideFlags: 0
@@ -7290,6 +7371,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5898899210226183318, guid: a1be634e8d0b4c04aa90bd129e3ff6cd, type: 3}
   m_PrefabInstance: {fileID: 1576342622}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1582025832 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8756745283342972897, guid: d91124f2654a3a44b8f5f1082550e6d7, type: 3}
+  m_PrefabInstance: {fileID: 7407670603863968446}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1587033291
 GameObject:
   m_ObjectHideFlags: 0
@@ -7456,6 +7542,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1614915647 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8756745283342972897, guid: d91124f2654a3a44b8f5f1082550e6d7, type: 3}
+  m_PrefabInstance: {fileID: 1829838072}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1649701780
 GameObject:
   m_ObjectHideFlags: 0
@@ -7995,6 +8086,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753142911}
   m_CullTransparentMesh: 1
+--- !u!1 &1786645093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8756745283342972897, guid: d91124f2654a3a44b8f5f1082550e6d7, type: 3}
+  m_PrefabInstance: {fileID: 574555654}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1793472648
 GameObject:
   m_ObjectHideFlags: 0
@@ -9977,6 +10073,22 @@ MonoBehaviour:
   questionDatabase: {fileID: 2114804984}
   submitButton: {fileID: 1057802034}
   scoreText: {fileID: 1900167820}
+  finishPanel: {fileID: 1987109005}
+  progressText: {fileID: 503219908}
+  streakProgressBar: {fileID: 1375379678}
+  streakText: {fileID: 158426009}
+  finishScoreText: {fileID: 183867444}
+  highScoreText: {fileID: 2016939293}
+  maxComboText: {fileID: 160082053}
+  accuracyText: {fileID: 2076296341}
+  coinsEarnedText: {fileID: 278151026}
+  xpEarnedText: {fileID: 878451877}
+  grade_S: {fileID: 1582025832}
+  grade_A: {fileID: 1614915647}
+  grade_B: {fileID: 1786645093}
+  grade_C: {fileID: 751766794}
+  ustadz: {fileID: 1078649498}
+  ustadzah: {fileID: 1412030137}
   questionType1: {fileID: 1829697619}
   mainQuestionText: {fileID: 1008675407}
   secondaryQuestionText: {fileID: 1743154246}
@@ -10237,7 +10349,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4929725230919837107}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1432772874}
+        m_TargetAssemblyTypeName: SceneManagement, Assembly-CSharp
+        m_MethodName: LoadToScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MainMenu
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &2875222056132085969
 CanvasRenderer:
   m_ObjectHideFlags: 0

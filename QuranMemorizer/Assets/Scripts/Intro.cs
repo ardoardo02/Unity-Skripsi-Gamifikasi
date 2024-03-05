@@ -32,13 +32,13 @@ public class Intro : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
 
-        // if (PlayerPrefs.HasKey("Character") && PlayerPrefs.HasKey("Username")) {
-        //     UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
-        // } else {
-        //     CharacterPanel.SetActive(true);
-        // }
+        if (PlayerPrefs.HasKey("Character") && PlayerPrefs.HasKey("Username")) {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        } else {
+            CharacterPanel.SetActive(true);
+        }
 
-        CharacterPanel.SetActive(true);
+        // CharacterPanel.SetActive(true);
     }
 
     // update character

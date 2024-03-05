@@ -9,8 +9,9 @@ public class LevelButtonChild : MonoBehaviour
     [SerializeField] TMP_Text titleText;
     [SerializeField] TMP_Text scoreText;
     [SerializeField] TMP_Text gradeScoreText;
-
-    Button button;
+    [SerializeField] Image lockImage;
+    [SerializeField] Button button;
+    
     Color titleColor;
     Color scoreColor;
 
@@ -20,18 +21,25 @@ public class LevelButtonChild : MonoBehaviour
 
     private void Start()
     {
-        button = GetComponent<Button>();
+        // button = GetComponent<Button>();
         // button.onClick.AddListener(OnClick);
 
         titleColor = TitleText.color;
         scoreColor = scoreText.color;
     }
 
-    public void SetLevelData(int title, int score, string gradeScore)
+    public void SetLevelData(int title, int score, string gradeScore, string prevGradeScore)
     {
         TitleText.text = "Ayat " + title;
         scoreText.text = score > 0 ? score.ToString() : "";
-        gradeScoreText.text = gradeScore;
+
+        if (prevGradeScore == "") {
+            gradeScoreText.text = "";
+            lockImage.gameObject.SetActive(true);
+            button.interactable = false;
+        } else {
+            gradeScoreText.text = gradeScore;
+        };
     }
 
     // change button color on click

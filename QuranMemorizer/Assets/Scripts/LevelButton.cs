@@ -11,6 +11,7 @@ public class LevelButton : MonoBehaviour
     [SerializeField] TMP_Text idnNameText;
     [SerializeField] TMP_Text scoreText;
     [SerializeField] Image iconImage;
+    [SerializeField] Image lockImage;
 
     Button button;
     Color surahNumberColor;
@@ -28,12 +29,18 @@ public class LevelButton : MonoBehaviour
         iconColor = iconImage.color;
     }
 
-    public void SetLevelData(int surahNumber, string surahName, string idnName, string gradeScore)
+    public void SetLevelData(int surahNumber, string surahName, string idnName, string gradeScore, int price)
     {
         surahNumberText.text = surahNumber.ToString();
         surahNameText.text = surahName;
         idnNameText.text = idnName;
-        scoreText.text = gradeScore;
+
+        if (price > 0) {
+            scoreText.text = "";
+            lockImage.gameObject.SetActive(true);
+        } else {
+            scoreText.text = gradeScore;
+        }
     }
 
     // change button color on click

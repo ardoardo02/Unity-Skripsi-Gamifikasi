@@ -10,8 +10,10 @@ public class LevelData
     public string arabicName;
     public List<int> score; // total score 0 - infinity
     public List<int> gradeScore; // score 0 - 100 to define grade S, A, B, C
+    public List<int> totalQuestions;
+    public int price;
 
-    public LevelData(int surahNumber, string surahName, string idnName, string arabicName, List<int> score, List<int> gradeScore)
+    public LevelData(int surahNumber, string surahName, string idnName, string arabicName, List<int> score, List<int> gradeScore, List<int> totalQuestions, int price)
     {
         this.surahNumber = surahNumber;
         this.surahName = surahName;
@@ -19,6 +21,8 @@ public class LevelData
         this.arabicName = arabicName;
         this.score = score;
         this.gradeScore = gradeScore;
+        this.totalQuestions = totalQuestions;
+        this.price = price;
     }
 }
 

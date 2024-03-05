@@ -21,20 +21,21 @@ public class LevelSelection : MonoBehaviour
     [SerializeField] TMP_Text ayahText;
     [SerializeField] TMP_Text scoreText;
     [SerializeField] TMP_Text gradeScoreText;
+    [SerializeField] GameObject lockIcon;
 
     [Header("Button")]
     [SerializeField] Button startButton;
+    [SerializeField] Button buyButton;
+    [SerializeField] TMP_Text buyButtonPriceText;
 
     ArabicFixer arabicFixer;
     LevelButton selectedLevelButton;
     LevelButtonChild selectedLevelButtonChild;
 
-
     //  level database
     private List<LevelData> levels = new List<LevelData>();
 
-    void Start()
-    {
+    private void Awake() {
         arabicFixer = arabicNameText.GetComponent<ArabicFixer>();
 
         // string scoresString = PlayerPrefs.GetString("LevelScores");
@@ -59,7 +60,13 @@ public class LevelSelection : MonoBehaviour
                 0,
                 0,
                 0
-            }
+            },
+            new List<int> { // total questions
+                4,
+                8,
+                10
+            },
+            1500
         ));
 
         levels.Add(new LevelData(
@@ -68,17 +75,24 @@ public class LevelSelection : MonoBehaviour
             "Ikhlas",
             "الإخلاص",
             new List<int> { // score
-                0,
-                0,
-                0,
-                0
+                PlayerPrefs.GetInt("HighScore_112_1", 0),
+                PlayerPrefs.GetInt("HighScore_112_2", 0),
+                PlayerPrefs.GetInt("HighScore_112_3", 0),
+                PlayerPrefs.GetInt("HighScore_112_4", 0)
             },
             new List<int> { // grade score
-                0,
-                0,
-                0,
-                0
-            }
+                PlayerPrefs.GetInt("Grade_112_1", 0),
+                PlayerPrefs.GetInt("Grade_112_2", 0),
+                PlayerPrefs.GetInt("Grade_112_3", 0),
+                PlayerPrefs.GetInt("Grade_112_4", 0)
+            },
+            new List<int> { // total questions
+                3,
+                5,
+                8,
+                10
+            },
+            0
         ));
 
         levels.Add(new LevelData(
@@ -91,8 +105,37 @@ public class LevelSelection : MonoBehaviour
             },
             new List<int> { // grade score
                 0
-            }
+            },
+            new List<int> { // total questions
+                5
+            },
+            500
         ));
+
+        levels.Add(new LevelData(
+            114,
+            "An-Nas",
+            "Manusia",
+            "الناس",
+            new List<int> { // score
+                0
+            },
+            new List<int> { // grade score
+                0
+            },
+            new List<int> { // total questions
+                5
+            },
+            0
+        ));
+    }
+
+    void Start()
+    {
+        levels.Sort((x, y) => {
+            // return x.surahNumber.CompareTo(y.surahNumber); // sort by surah number
+            return x.price.CompareTo(y.price); // sort by price
+        });
 
         // Create level buttons
         foreach (LevelData level in levels)
@@ -107,7 +150,7 @@ public class LevelSelection : MonoBehaviour
                 tempGradeScore += level.gradeScore[i];
             }
 
-            levelButton.GetComponent<LevelButton>().SetLevelData(level.surahNumber, level.surahName, level.idnName, CheckGradeScore(tempGradeScore/level.score.Count));
+            levelButton.GetComponent<LevelButton>().SetLevelData(level.surahNumber, level.surahName, level.idnName, CheckGradeScore(tempGradeScore/level.score.Count), level.price);
             levelButton.GetComponent<Button>().onClick.AddListener(() => ShowLevelData(level, levelButton.GetComponent<LevelButton>(), LevelContainer.GetComponent<RectTransform>()));
         }
 
@@ -145,34 +188,50 @@ public class LevelSelection : MonoBehaviour
         }
         selectedLevelButton = levelButton;
         selectedLevelButton.ChangeColor();
-
+        
         int tempScore = 0;
         int tempGradeScore = 0;
-        // Create the child buttons for the level
-        for (int i = 0; i < level.score.Count; i++)
-        {
-            tempScore += level.score[i];
-            tempGradeScore += level.gradeScore[i];
 
-            if (selectedLevelButtonChild) continue;
-            // Increase the height of the level container
-            levelContainerRectTransform.sizeDelta = new Vector2(levelContainerRectTransform.sizeDelta.x, levelContainerRectTransform.sizeDelta.y + 110);
+        if (level.price == 0){
+            for (int i = 0; i < level.score.Count; i++) {
+                tempScore += level.score[i];
+                tempGradeScore += level.gradeScore[i];
 
-            // Create a child button for each level
-            GameObject levelButtonChild = Instantiate(LevelButtonChildPrefab, levelButton.transform.parent);
-            levelButtonChild.GetComponent<LevelButtonChild>().SetLevelData(i + 1, level.score[i], CheckGradeScore(level.gradeScore[i]));
-            levelButtonChild.GetComponent<Button>().onClick.AddListener(() => ShowChildLevelData(levelButtonChild.GetComponent<LevelButtonChild>()));
+                if (selectedLevelButtonChild) continue;
+                // Increase the height of the level container
+                levelContainerRectTransform.sizeDelta = new Vector2(levelContainerRectTransform.sizeDelta.x, levelContainerRectTransform.sizeDelta.y + 110);
+                
+                // Create a child button for each level
+                GameObject levelButtonChild = Instantiate(LevelButtonChildPrefab, levelButton.transform.parent);
+                levelButtonChild.GetComponent<LevelButtonChild>().SetLevelData(i + 1, level.score[i], CheckGradeScore(level.gradeScore[i]), i == 0 ? "unlock" : CheckGradeScore(level.gradeScore[i-1]));
+                levelButtonChild.GetComponent<Button>().onClick.AddListener(() => ShowChildLevelData(levelButtonChild.GetComponent<LevelButtonChild>()));
+            }
         }
+        // Create the child buttons for the level
 
         // Show the level data
         surahNumberText.text = level.surahNumber.ToString();
         surahNameText.text = level.surahName;
         idnNameText.text = level.idnName;
-        arabicNameText.text = level.arabicName;
+        // arabicNameText.text = level.arabicName;
         arabicFixer.fixedText = level.arabicName;
         ayahText.text = level.score.Count + " Ayat";
-        scoreText.text = tempScore.ToString();
-        gradeScoreText.text = CheckGradeScore(tempGradeScore/level.score.Count);
+        if (level.price > 0){
+            scoreText.text = "";
+            gradeScoreText.text = "";
+            buyButtonPriceText.text = level.price.ToString();
+            
+            lockIcon.SetActive(true);
+            startButton.gameObject.SetActive(false);
+            buyButton.gameObject.SetActive(true);
+        } else {
+            lockIcon.SetActive(false);
+            buyButton.gameObject.SetActive(false);
+            startButton.gameObject.SetActive(true);
+
+            scoreText.text = tempScore.ToString();
+            gradeScoreText.text = CheckGradeScore(tempGradeScore/level.score.Count);
+        }
 
         if (selectedLevelButtonChild){
             selectedLevelButtonChild.ChangeColor();
