@@ -59,11 +59,15 @@ public class GameManager : MonoBehaviour
     [Header("Question Type 2")]
     [SerializeField] GameObject questionType2;
     [SerializeField] TMP_Text mainQuestionText2;
+    [SerializeField] AudioSource audioQuestion2;
     [SerializeField] Text answerText2_1;
     [SerializeField] Text answerText2_2;
     [SerializeField] Text answerText2_3;
     [SerializeField] Text answerText2_4;
+    [SerializeField] Sprite notPlayingAudioIcon;
+    [SerializeField] Sprite playingAudioIcon;
     List<Text> answerTexts2 = new List<Text>();
+    Button audioButton2;
 
     private void Awake() {
         // Get the surah and ayah data from the player prefs
@@ -76,6 +80,8 @@ public class GameManager : MonoBehaviour
         progressText.text = "1/" + totalQuestions;
         streakProgressBar.fillAmount = 0;
         streakText.text = "0";
+
+        audioButton2 = audioQuestion2.GetComponent<Button>();
 
         // Add the answer texts to the list
         answerTexts1.Add(answerText1_1);
@@ -92,14 +98,19 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < answerTexts1.Count; i++) {
             int index = i;
             answerTexts1[i].GetComponentInParent<Button>().onClick.AddListener(() => OnAnswerButtonClicked(index + 1));
+            answerTexts2[i].GetComponentInParent<Button>().onClick.AddListener(() => OnAnswerButtonClicked(index + 1));
         }
-
+        
+        audioButton2.onClick.AddListener(PlayAudioQuestion2);
         submitButton.onClick.AddListener(OnSubmitButtonClicked);
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        questionType1.SetActive(false);
+        questionType2.SetActive(false);
+
         if (currentSurah == 999 || currentAyah == 999) {
             Debug.Log("No surah and ayah data found");
         }
@@ -108,19 +119,33 @@ public class GameManager : MonoBehaviour
         Debug.Log("Current Ayah: " + currentAyah);
         Debug.Log("Total Questions: " + totalQuestions);
 
-        GetQuestionType1();
+        GetQuestion();
+    }
+
+    void GetQuestion() {
+        // Randomly select a question type
+        selectedQuestionType = Random.Range(1, 3);
+
+        switch (selectedQuestionType) {
+            case 1:
+                GetQuestionType1();
+                break;
+            case 2:
+                GetQuestionType2();
+                break;
+        }
     }
 
     void GetQuestionType1() {
         selectedQuestionType = 1;
 
         int questionBasedOnAyah = currentAyah * 2;
-        if (questionBasedOnAyah > questionDatabase.questions.Count) {
-            questionBasedOnAyah = questionDatabase.questions.Count;
+        if (questionBasedOnAyah > questionDatabase.questionsType_1.Count) {
+            questionBasedOnAyah = questionDatabase.questionsType_1.Count;
         }
         // Randomly select a question from the database
-        var currentLevel = questionDatabase.questions[currentSurah];
-        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah)];
+        var currentLevel = questionDatabase.questionsType_1[currentSurah];
+        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah + 1)];
         // var currentQuestion = questionDatabase.questions[currentSurah, Random.Range(0, questionBasedOnAyah)];
 
         // Display question text
@@ -128,7 +153,7 @@ public class GameManager : MonoBehaviour
         secondaryQuestionText.GetComponent<ArabicFixer>().fixedText = currentQuestion.secondaryQuestionText;
         
         // Get the correct answer
-        var currentOptions = questionDatabase.options[currentSurah];
+        var currentOptions = questionDatabase.optionsType_1[currentSurah];
         multipleChoiceAnswer = currentOptions[currentQuestion.correctAnswerIndex];
 
         // Randomize the options
@@ -154,19 +179,80 @@ public class GameManager : MonoBehaviour
         Debug.Log("Correct answer: " + multipleChoiceAnswer);
     }
 
-    public void OnAnswerButtonClicked(int answerIndex) {
-        // Store the clicked answer
-        clickedMultipleChoiceAnswer = answerTexts1[answerIndex - 1].text;
+    void GetQuestionType2() {
+        selectedQuestionType = 2;
 
-        // Reset the color of all answers
-        for (int i = 0; i < answerTexts1.Count; i++) {
-            answerTexts1[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
-            answerTexts1[i].color = new Color32(51, 51, 51, 255);
+        int questionBasedOnAyah = currentAyah * 2;
+        if (questionBasedOnAyah > questionDatabase.questionsType_2.Count) {
+            questionBasedOnAyah = questionDatabase.questionsType_2.Count;
+        }
+        // Randomly select a question from the database
+        var currentLevel = questionDatabase.questionsType_2[currentSurah];
+        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah + 1)];
+        // var currentQuestion = questionDatabase.questions[currentSurah, Random.Range(0, questionBasedOnAyah)];
+
+        // Display question text
+        mainQuestionText2.text = currentQuestion.mainQuestionText;
+        audioQuestion2.clip = Resources.Load<AudioClip>(currentQuestion.secondaryQuestionText);
+        
+        // Get the correct answer
+        var currentOptions = questionDatabase.optionsType_2[currentSurah];
+        multipleChoiceAnswer = currentOptions[currentQuestion.correctAnswerIndex];
+
+        // Randomize the options
+        List<string> randomizedOptions = new List<string>(currentOptions);
+        randomizedOptions = randomizedOptions.OrderBy(x => UnityEngine.Random.value).ToList(); // Use OrderBy with a random value to shuffle the list
+        
+        // Display options
+        bool isAnswerSet = false;
+        for (int i = 0; i < answerTexts2.Count; i++) {
+            answerTexts2[i].GetComponent<ArabicFixer>().fixedText = randomizedOptions[i];
+            if (!isAnswerSet && randomizedOptions[i] == multipleChoiceAnswer) {
+                isAnswerSet = true;
+            }
+        };
+
+        // Randomly place the correct 
+        if (!isAnswerSet) {
+            int randomAnswerIndex = Random.Range(0, 4);
+            answerTexts2[randomAnswerIndex].GetComponent<ArabicFixer>().fixedText = multipleChoiceAnswer;
         }
 
-        // Change the color of the clicked answer
-        answerTexts1[answerIndex - 1].GetComponentInParent<Image>().color = new Color32(0, 169, 171, 255);
-        answerTexts1[answerIndex - 1].color = new Color32(255, 255, 255, 255);
+        questionType2.SetActive(true);
+        Debug.Log("Correct answer: " + multipleChoiceAnswer);
+    }
+
+    public void OnAnswerButtonClicked(int answerIndex) {
+        switch (selectedQuestionType) {
+            case 1:
+                // Store the clicked answer
+                clickedMultipleChoiceAnswer = answerTexts1[answerIndex - 1].text;
+
+                // Reset the color of all answers
+                for (int i = 0; i < answerTexts1.Count; i++) {
+                    answerTexts1[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
+                    answerTexts1[i].color = new Color32(51, 51, 51, 255);
+                }
+
+                // Change the color of the clicked answer
+                answerTexts1[answerIndex - 1].GetComponentInParent<Image>().color = new Color32(0, 169, 171, 255);
+                answerTexts1[answerIndex - 1].color = new Color32(255, 255, 255, 255);
+                break;
+            case 2:
+                // Store the clicked answer
+                clickedMultipleChoiceAnswer = answerTexts2[answerIndex - 1].text;
+
+                // Reset the color of all answers
+                for (int i = 0; i < answerTexts2.Count; i++) {
+                    answerTexts2[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
+                    answerTexts2[i].color = new Color32(51, 51, 51, 255);
+                }
+
+                // Change the color of the clicked answer
+                answerTexts2[answerIndex - 1].GetComponentInParent<Image>().color = new Color32(0, 169, 171, 255);
+                answerTexts2[answerIndex - 1].color = new Color32(255, 255, 255, 255);
+                break;
+        }
 
         submitButton.interactable = true;
     }
@@ -209,16 +295,27 @@ public class GameManager : MonoBehaviour
         submitButton.colors = colors;
 
         // Reset the color of all answers
-        for (int i = 0; i < answerTexts1.Count; i++) {
-            answerTexts1[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
-            answerTexts1[i].color = new Color32(51, 51, 51, 255);
+        switch (selectedQuestionType) {
+            case 1:
+                for (int i = 0; i < answerTexts1.Count; i++) {
+                    answerTexts1[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
+                    answerTexts1[i].color = new Color32(51, 51, 51, 255);
+                }
+                questionType1.SetActive(false);
+                break;
+            case 2:
+                for (int i = 0; i < answerTexts2.Count; i++) {
+                    answerTexts2[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
+                    answerTexts2[i].color = new Color32(51, 51, 51, 255);
+                }
+                questionType2.SetActive(false);
+                break;
         }
 
         // Reset state
         clickedMultipleChoiceAnswer = "";
         multipleChoiceAnswer = "";
         selectedQuestionType = 0;
-        questionType1.SetActive(false);
         
         // Update the question number
         currentQuestionNumber++;
@@ -228,7 +325,7 @@ public class GameManager : MonoBehaviour
         if (currentQuestionNumber > totalQuestions) {
             SetUpFinishPanel();
         } else {
-            GetQuestionType1();
+            GetQuestion();
         }
     }
 
@@ -275,6 +372,30 @@ public class GameManager : MonoBehaviour
         }
         if (accuracy > PlayerPrefs.GetInt(gradeKey, 0)) {
             PlayerPrefs.SetInt(gradeKey, accuracy);
+        }
+    }
+
+    public void PlayAudioQuestion2() {
+        if (audioQuestion2.clip != null) {
+            Image audioIcon = audioButton2.GetComponent<Image>();
+            if (audioQuestion2.isPlaying) {
+                audioQuestion2.Stop();
+                audioIcon.sprite = notPlayingAudioIcon;
+            } else {
+                audioQuestion2.Play();
+                audioIcon.sprite = playingAudioIcon;
+            }
+        } else {
+            Debug.Log("Audio clip is null");
+        }
+    }
+
+    private void Update() {
+        // Check if the audio has finished playing
+        if (selectedQuestionType == 2) {
+            if (!audioQuestion2.isPlaying && audioButton2.GetComponent<Image>().sprite == playingAudioIcon) {
+                audioButton2.GetComponent<Image>().sprite = notPlayingAudioIcon;
+            }
         }
     }
 }
