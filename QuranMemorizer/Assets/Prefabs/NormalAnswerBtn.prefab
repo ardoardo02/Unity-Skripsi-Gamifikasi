@@ -216,5 +216,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fixedText: 
-  ShowTashkeel: 0
+  ShowTashkeel: 1
   UseHinduNumbers: 0

@@ -6,45 +6,89 @@ using UnityEngine.UI;
 
 public class TopBar : MonoBehaviour
 {
+    [SerializeField] AchievementDatabase achievementDatabase;
     [Header("Profile")]
-    [SerializeField] Image Avatar;
-    [SerializeField] Sprite GirlSprite;
-    [SerializeField] TMP_Text Username;
+    [SerializeField] Transform profilePanel;
+    [SerializeField] Button profileButton;
+    [SerializeField] Image avatar;
+    [SerializeField] Sprite girlSprite;
+    [SerializeField] TMP_Text username;
 
     [Header("Coins")]
-    [SerializeField] TMP_Text Coins;
+    [SerializeField] TMP_Text coins;
 
     [Header("Experience")]
-    [SerializeField] TMP_Text Level;
-    [SerializeField] Image ExperienceBar;
+    [SerializeField] TMP_Text level;
+    [SerializeField] Image experienceBar;
     [SerializeField] int currentLevel = 1;
     [SerializeField] int currentXP = 0;
     [SerializeField] int baseXP = 50; // Base XP required for reaching level 2
     [SerializeField] float levelMultiplier = 1.5f; // Multiplier to increase XP for each level
 
+    public Image Avatar { get => avatar; set => avatar = value; }
+    public TMP_Text Username { get => username; set => username = value; }
+    public int CurrentLevel { get => currentLevel; }
+    public int CurrentXP { get => currentXP; }
+
+    // Keys for PlayerPrefs
+    const string KEY_CHARACTER = "CHARACTER";
+    const string KEY_USERNAME = "USERNAME";
+    const string KEY_COINS = "COINS";
+    const string KEY_LEVEL = "LEVEL";
+    const string KEY_EXPERIENCE = "EXPERIENCE";
+    const string KEY_TOTAL_COIN = "ACH_TOTAL_COIN";
+
+
+    private void Awake() {
+        profileButton.onClick.AddListener(() => {
+            profilePanel.gameObject.SetActive(true);
+        });
+    }
+
     private void Start() {
         // set avatar
-        if (PlayerPrefs.HasKey("Character")) {
-            if (PlayerPrefs.GetString("Character") == "girl") {
-                Avatar.sprite = GirlSprite;
+        if (PlayerPrefs.HasKey(KEY_CHARACTER)) {
+            if (PlayerPrefs.GetString(KEY_CHARACTER) == "girl") {
+                avatar.sprite = girlSprite;
             }
         }
 
         // set username
-        if (PlayerPrefs.HasKey("Username")) {
-            Username.text = PlayerPrefs.GetString("Username");
+        if (PlayerPrefs.HasKey(KEY_USERNAME)) {
+            username.text = PlayerPrefs.GetString(KEY_USERNAME);
         }
 
         // set coins
-        Coins.text = PlayerPrefs.GetInt("Coins").ToString();
+        coins.text = PlayerPrefs.GetInt(KEY_COINS).ToString();
 
         // set level
-        currentLevel = PlayerPrefs.GetInt("Level", 1);
-        Level.text = currentLevel.ToString();
+        currentLevel = PlayerPrefs.GetInt(KEY_LEVEL, 1);
+        level.text = currentLevel.ToString();
 
         // set experience
-        currentXP = PlayerPrefs.GetInt("Experience");
+        currentXP = PlayerPrefs.GetInt(KEY_EXPERIENCE);
         CheckLevelUp(); 
+    }
+
+    public void GainCoins(int amount)
+    {
+        int totalCoins = PlayerPrefs.GetInt(KEY_COINS, 0) + amount;
+        PlayerPrefs.SetInt(KEY_COINS, totalCoins);
+        coins.text = totalCoins.ToString();
+
+        // Update total coin achievement
+        int totalCoinAchievement = PlayerPrefs.GetInt(KEY_TOTAL_COIN, 0);
+        totalCoinAchievement += amount;
+        PlayerPrefs.SetInt(KEY_TOTAL_COIN, totalCoinAchievement);
+        
+        achievementDatabase.achievements.Find(ach => ach.key == KEY_TOTAL_COIN).progress += amount;
+    }
+
+    public void UseCoins(int amount)
+    {
+        int totalCoins = PlayerPrefs.GetInt(KEY_COINS, 0) - amount;
+        PlayerPrefs.SetInt(KEY_COINS, totalCoins);
+        coins.text = totalCoins.ToString();
     }
 
     public void GainExperience(int amount)
@@ -52,7 +96,7 @@ public class TopBar : MonoBehaviour
         currentXP += amount;
         CheckLevelUp();
 
-        PlayerPrefs.SetInt("Experience", currentXP);
+        PlayerPrefs.SetInt(KEY_EXPERIENCE, currentXP);
     }
 
     void CheckLevelUp()
@@ -61,18 +105,18 @@ public class TopBar : MonoBehaviour
         {
             currentXP -= XPForNextLevel(currentLevel); // Remove XP for next level
             currentLevel++; // Increase level
-            Level.text = currentLevel.ToString(); // Update UI
-            PlayerPrefs.SetInt("Level", currentLevel);
+            level.text = currentLevel.ToString(); // Update UI
+            PlayerPrefs.SetInt(KEY_LEVEL, currentLevel);
 
             // Handle level-up logic (e.g., increase player stats, unlock abilities)
             Debug.Log("Leveled Up! Current Level: " + currentLevel);
         }
 
         // Update experience bar
-        ExperienceBar.fillAmount = (float)currentXP / XPForNextLevel(currentLevel);
+        experienceBar.fillAmount = (float)currentXP / XPForNextLevel(currentLevel);
     }
 
-    int XPForNextLevel(int level)
+    public int XPForNextLevel(int level)
     {
         return Mathf.RoundToInt(baseXP * Mathf.Pow(levelMultiplier, level - 1));
     }

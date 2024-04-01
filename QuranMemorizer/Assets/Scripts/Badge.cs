@@ -13,9 +13,14 @@ public class Badge : MonoBehaviour
     [SerializeField] TMP_Text progress;
     [SerializeField] Image progressBar;
     [SerializeField] Button claimButton;
+    string key;
 
-    public void SetBadgeData(string icon, Color32 iconColor, string title, string description, string reward, int progress, int goal, bool isClaimed)
+    public string Key { get => key; }
+    public Button ClaimButton { get => claimButton; }
+
+    public void SetBadgeData(string key, string icon, Color32 iconColor, string title, string description, string reward, int progress, int goal, bool isClaimed)
     {
+        this.key = key;
         this.icon.sprite = Resources.Load<Sprite>(icon);
         this.icon.color = iconColor;
         this.title.text = title;

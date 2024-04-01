@@ -79,12 +79,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f5983abd258cb940a631a53e06cd6d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Avatar: {fileID: 8933212517672768825}
-  GirlSprite: {fileID: 21300000, guid: ac347e9ca6c61da47a0f7e7f1afe6d52, type: 3}
-  Username: {fileID: 8933212516527340452}
-  Coins: {fileID: 8933212516576472586}
-  Level: {fileID: 8933212516230263776}
-  ExperienceBar: {fileID: 8933212517392545142}
+  profilePanel: {fileID: 0}
+  profileButton: {fileID: 8933212517153267572}
+  avatar: {fileID: 8933212517672768825}
+  girlSprite: {fileID: 21300000, guid: ac347e9ca6c61da47a0f7e7f1afe6d52, type: 3}
+  username: {fileID: 8933212516527340452}
+  coins: {fileID: 8933212516576472586}
+  level: {fileID: 8933212516230263776}
+  experienceBar: {fileID: 8933212517392545142}
   currentLevel: 1
   currentXP: 0
   baseXP: 50

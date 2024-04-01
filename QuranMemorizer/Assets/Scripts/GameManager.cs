@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     int currentSurah;
     int currentAyah;
     int totalQuestions;
+    
+    float timer = 0;
+    [SerializeField] float timerDuration = 61;
 
     int score = 0;
     int maxStreak = 0;
@@ -23,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] QuestionDatabase questionDatabase;
     [SerializeField] Button submitButton;
     [SerializeField] TMP_Text scoreText;
+    [SerializeField] Image timerBar;
     [SerializeField] GameObject finishPanel;
 
     [Header("Progress Bar")]
@@ -69,18 +73,38 @@ public class GameManager : MonoBehaviour
     List<Text> answerTexts2 = new List<Text>();
     Button audioButton2;
 
+    // Keys for PlayerPrefs
+    const string KEY_SURAH_NUMBER = "SURAH_NUMBER";
+    const string KEY_AYAH_NUMBER = "AYAH_NUMBER";
+    const string KEY_TOTAL_QUESTIONS = "TOTAL_QUESTIONS";
+    const string KEY_HIGHSCORE = "HIGHSCORE_";
+    const string KEY_GRADE = "GRADE_";
+    const string KEY_COINS = "COINS";
+    const string KEY_EXPERIENCE = "EXPERIENCE";
+    const string KEY_S_STREAK = "S_STREAK";
+    // achievement
+    const string KEY_ACH_TOTAL_COINS = "ACH_TOTAL_COIN";
+    const string KEY_ACH_S_STREAK = "ACH_S_STREAK";
+    // mission
+    const string KEY_MISSION_COIN = "MISSION_COIN";
+    const string KEY_MISSION_SCORE_S = "MISSION_SCORE_S";
+    const string KEY_MISSION_LEVEL = "MISSION_LEVEL";
+    const string KEY_MISSION_COMBO = "MISSION_COMBO";
+    const string KEY_MISSION_XP = "MISSION_XP";
+
+
     private void Awake() {
         // Get the surah and ayah data from the player prefs
-        currentSurah = PlayerPrefs.GetInt("SurahNumber", 999);
-        currentAyah = PlayerPrefs.GetInt("AyahNumber", 999);
-        totalQuestions = PlayerPrefs.GetInt("TotalQuestions", 10);
+        currentSurah = PlayerPrefs.GetInt(KEY_SURAH_NUMBER, 999);
+        currentAyah = PlayerPrefs.GetInt(KEY_AYAH_NUMBER, 999);
+        totalQuestions = PlayerPrefs.GetInt(KEY_TOTAL_QUESTIONS, 10);
 
         // Set the initial score and progress
         scoreText.text = score.ToString();
         progressText.text = "1/" + totalQuestions;
         streakProgressBar.fillAmount = 0;
         streakText.text = "0";
-
+        
         audioButton2 = audioQuestion2.GetComponent<Button>();
 
         // Add the answer texts to the list
@@ -134,18 +158,22 @@ public class GameManager : MonoBehaviour
                 GetQuestionType2();
                 break;
         }
+
+        timer = timerDuration;
+        timerBar.fillAmount = 1;
     }
 
     void GetQuestionType1() {
         selectedQuestionType = 1;
 
-        int questionBasedOnAyah = currentAyah * 2;
-        if (questionBasedOnAyah > questionDatabase.questionsType_1.Count) {
-            questionBasedOnAyah = questionDatabase.questionsType_1.Count;
+        int questionBasedOnAyah = currentAyah * 3;
+
+        if (questionBasedOnAyah > questionDatabase.questionsType_1[currentSurah].Count - 1) {
+            questionBasedOnAyah = questionDatabase.questionsType_1[currentSurah].Count - 1;
         }
         // Randomly select a question from the database
         var currentLevel = questionDatabase.questionsType_1[currentSurah];
-        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah + 1)];
+        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah)];
         // var currentQuestion = questionDatabase.questions[currentSurah, Random.Range(0, questionBasedOnAyah)];
 
         // Display question text
@@ -183,12 +211,12 @@ public class GameManager : MonoBehaviour
         selectedQuestionType = 2;
 
         int questionBasedOnAyah = currentAyah * 2;
-        if (questionBasedOnAyah > questionDatabase.questionsType_2.Count) {
-            questionBasedOnAyah = questionDatabase.questionsType_2.Count;
+        if (questionBasedOnAyah > questionDatabase.questionsType_2[currentSurah].Count - 1) {
+            questionBasedOnAyah = questionDatabase.questionsType_2[currentSurah].Count - 1;
         }
         // Randomly select a question from the database
         var currentLevel = questionDatabase.questionsType_2[currentSurah];
-        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah + 1)];
+        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah)];
         // var currentQuestion = questionDatabase.questions[currentSurah, Random.Range(0, questionBasedOnAyah)];
 
         // Display question text
@@ -270,15 +298,15 @@ public class GameManager : MonoBehaviour
             colors.disabledColor = new Color32(100, 193, 126, 255); // Correct answer color
             totalRightAnswers++;
 
-            // Add score
-            score += 100;
-            scoreText.text = score.ToString();
-
             // Add streak
             streakText.text = (int.Parse(streakText.text) + 1).ToString();
             streakProgressBar.fillAmount = float.Parse(streakText.text) / totalQuestions;
             if (int.Parse(streakText.text) > maxStreak) maxStreak = int.Parse(streakText.text);
-            
+
+            // Add score
+            score += (100 + (int)Mathf.Round(timer)) * int.Parse(streakText.text);
+            scoreText.text = score.ToString();
+         
         } else {
             colors.disabledColor = new Color32(171, 0, 0, 255); // Wrong answer color
 
@@ -331,31 +359,49 @@ public class GameManager : MonoBehaviour
 
     void SetUpFinishPanel() {
         // Getting keys for high score and grade
-        string highScoreKey = "HighScore_" + currentSurah + "_" + currentAyah;
-        string gradeKey = "Grade_" + currentSurah + "_" + currentAyah;
+        string highScoreKey = KEY_HIGHSCORE + currentSurah + "_" + currentAyah;
+        string gradeKey = KEY_GRADE + currentSurah + "_" + currentAyah;
 
         // Calculate the accuracy
         int accuracy = (int)((float)totalRightAnswers / totalQuestions * 100);
+        
+        // temporary variables
+        int tempCoins = 0;
+        int tempXP = 0;
+
+        // Set the grade
+        grade_S.SetActive(false);
+        if (accuracy > 99) {
+            grade_S.SetActive(true);
+            tempCoins = 30;
+            tempXP = 50;
+
+            PlayerPrefs.SetInt(KEY_MISSION_SCORE_S, PlayerPrefs.GetInt(KEY_MISSION_SCORE_S, 0) + 1); // daily mission score S
+            PlayerPrefs.SetInt(KEY_S_STREAK, PlayerPrefs.GetInt(KEY_S_STREAK, 0) + 1); // s streak
+            if (PlayerPrefs.GetInt(KEY_S_STREAK, 0) > PlayerPrefs.GetInt(KEY_ACH_S_STREAK, 0)) { // achievement s streak
+                PlayerPrefs.SetInt(KEY_ACH_S_STREAK, PlayerPrefs.GetInt(KEY_S_STREAK));
+            }
+        } else if (accuracy > 80) {
+            grade_A.SetActive(true);
+            tempCoins = 20;
+            tempXP = 40;
+        } else if (accuracy > 60) {
+            grade_B.SetActive(true);
+            tempCoins = 15;
+            tempXP = 30;
+        } else {
+            grade_C.SetActive(true);
+            tempCoins = 10;
+            tempXP = 20;
+        }
 
         // Set the finish panel texts
         finishScoreText.text = score.ToString();
         highScoreText.text = PlayerPrefs.GetInt(highScoreKey, 0).ToString();
         maxComboText.text = maxStreak.ToString();
         accuracyText.text = accuracy + "%";
-        coinsEarnedText.text = "0";
-        xpEarnedText.text = "0";
-
-        // Set the grade
-        grade_S.SetActive(false);
-        if (accuracy > 99) {
-            grade_S.SetActive(true);
-        } else if (accuracy > 80) {
-            grade_A.SetActive(true);
-        } else if (accuracy > 60) {
-            grade_B.SetActive(true);
-        } else {
-            grade_C.SetActive(true);
-        }
+        coinsEarnedText.text = tempCoins.ToString();
+        xpEarnedText.text = tempXP.ToString();
 
         // Randomly select a character
         if (Random.Range(0, 2) == 0) { // if 0, display ustadzah : else, display ustadz
@@ -373,6 +419,17 @@ public class GameManager : MonoBehaviour
         if (accuracy > PlayerPrefs.GetInt(gradeKey, 0)) {
             PlayerPrefs.SetInt(gradeKey, accuracy);
         }
+
+        // Add the variables to the player prefs
+        PlayerPrefs.SetInt(KEY_COINS, PlayerPrefs.GetInt(KEY_COINS, 0) + tempCoins); // coins
+        PlayerPrefs.SetInt(KEY_ACH_TOTAL_COINS, PlayerPrefs.GetInt(KEY_ACH_TOTAL_COINS, 0) + tempCoins); // achievement total coins
+        PlayerPrefs.SetInt(KEY_MISSION_COIN, PlayerPrefs.GetInt(KEY_MISSION_COIN, 0) + tempCoins); // daily mission coin
+
+        PlayerPrefs.SetInt(KEY_EXPERIENCE, PlayerPrefs.GetInt(KEY_EXPERIENCE, 0) + tempXP); // experience
+        PlayerPrefs.SetInt(KEY_MISSION_XP, PlayerPrefs.GetInt(KEY_MISSION_XP, 0) + tempXP); // daily mission xp
+
+        PlayerPrefs.SetInt(KEY_MISSION_LEVEL, PlayerPrefs.GetInt(KEY_MISSION_LEVEL, 0) + 1); // daily mission level
+        if (maxStreak >= 5) PlayerPrefs.SetInt(KEY_MISSION_COMBO, PlayerPrefs.GetInt(KEY_MISSION_COMBO, 0) + 1); // daily mission combo
     }
 
     public void PlayAudioQuestion2() {
@@ -396,6 +453,12 @@ public class GameManager : MonoBehaviour
             if (!audioQuestion2.isPlaying && audioButton2.GetComponent<Image>().sprite == playingAudioIcon) {
                 audioButton2.GetComponent<Image>().sprite = notPlayingAudioIcon;
             }
+        }
+
+        // Update the timer
+        if (timer > 0) {
+            timer -= Time.deltaTime;
+            timerBar.fillAmount = timer / timerDuration;
         }
     }
 }

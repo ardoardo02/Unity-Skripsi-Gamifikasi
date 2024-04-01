@@ -1196,6 +1196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496e946b09b352040be886d1f9c3ab5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  achievementDatabase: {fileID: 0}
   badgePrefab: {fileID: 5657901343311620219, guid: 99f4522015b91c84f98332220b9a1757, type: 3}
   horizontalLayoutPrefab: {fileID: 410864762439247867, guid: 05ea4605ea212bf458845d8e9907232f, type: 3}
   emptyObjectPrefab: {fileID: 3715953154551656608, guid: fd7769652c14d1e4abfea98d85ba815c, type: 3}

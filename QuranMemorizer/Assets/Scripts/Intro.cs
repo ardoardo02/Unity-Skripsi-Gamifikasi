@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Intro : MonoBehaviour
 {
+    [SerializeField] bool ResetPlayerPrefs;
     [Header("Character Panel")]
     [SerializeField] GameObject CharacterPanel;
     [SerializeField] Button BoyButton;
@@ -22,9 +23,14 @@ public class Intro : MonoBehaviour
 
     string CharacterSelected;
 
+    // Keys for PlayerPrefs
+    const string KEY_CHARACTER = "CHARACTER";
+    const string KEY_USERNAME = "USERNAME";
+
     // Start is called before the first frame update
     void Start()
     {
+        if (ResetPlayerPrefs) PlayerPrefs.DeleteAll();
         StartCoroutine("Welcome");
     }
 
@@ -32,7 +38,7 @@ public class Intro : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
 
-        if (PlayerPrefs.HasKey("Character") && PlayerPrefs.HasKey("Username")) {
+        if (PlayerPrefs.HasKey(KEY_CHARACTER) && PlayerPrefs.HasKey(KEY_USERNAME)) {
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         } else {
             CharacterPanel.SetActive(true);
@@ -91,8 +97,8 @@ public class Intro : MonoBehaviour
 
     public void OnSubmit()
     {
-        PlayerPrefs.SetString("Character", CharacterSelected);
-        PlayerPrefs.SetString("Username", UsernameInput.text);
+        PlayerPrefs.SetString(KEY_CHARACTER, CharacterSelected);
+        PlayerPrefs.SetString(KEY_USERNAME, UsernameInput.text);
 
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }

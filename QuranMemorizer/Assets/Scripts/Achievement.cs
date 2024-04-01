@@ -4,101 +4,21 @@ using UnityEngine;
 
 public class Achievement : MonoBehaviour
 {
-    public class AchievementData
-    {
-        public string icon;
-        public List<string> title;
-        public string description;
-        public int progress;
-        public List<int> goal;
-        public List<int> rewards;
-        public List<bool> isClaimed;
+    [SerializeField] TopBar topBar;
+    [SerializeField] AchievementDatabase achievementDatabase;
+    [SerializeField] GameObject badgePrefab;
+    [SerializeField] GameObject horizontalLayoutPrefab;
+    [SerializeField] GameObject emptyObjectPrefab;
+    [SerializeField] Transform badgetParent;
 
-        public AchievementData(string icon, List<string> title, string description, int progress, List<int> goal, List<int> rewards, List<bool> isClaimed)
-        {
-            this.icon = icon;
-            this.title = title;
-            this.description = description;
-            this.progress = progress;
-            this.goal = goal;
-            this.rewards = rewards;
-            this.isClaimed = isClaimed;
-        }
-    }
+    List<AchievementDatabase.AchievementData> achievements;
 
-    //  achivement database
-    private List<AchievementData> achievements = new List<AchievementData>();
+    const string KEY_CLAIMED = "_CLAIMED";
 
-    // references
-    public GameObject badgePrefab;
-    public GameObject horizontalLayoutPrefab;
-    public GameObject emptyObjectPrefab;
-    public Transform badgetParent;
-
-    private void Awake() {
-        // Populate the achievement database with sample achievements
-        achievements.Add(new AchievementData(
-            "Sprites/TargetIcon",
-            new List<string> {"Misi Selesai", "Ahli Tugas", "Pekerja Keras", "Pahlawan Harian"},
-            "Selesaikan misi harian",
-            0,
-            new List<int> {1, 5, 15, 30},
-            new List<int> {20, 100, 300, 500},
-            new List<bool> {false, false, false, false}
-        ));
-
-        achievements.Add(new AchievementData(
-            "Sprites/CoinIcon",
-            new List<string> {"Aku Punya Koin", "Kolektor Koin", "Kaya Raya", "Bankir"},
-            "Kumpulkan jumlah koin",
-            0,
-            new List<int> {100, 1000, 5000, 10000},
-            new List<int> {20, 150, 300, 500},
-            new List<bool> {false, false, false, false}
-        ));
-
-        achievements.Add(new AchievementData(
-            "Sprites/BookIcon",
-            new List<string> {"Pembaca", "Pencari Surah", "Penggemar Al-Quran", "Penikmat Al-Quran"},
-            "Jumlah surah yang dipunyai",
-            0,
-            new List<int> {2, 5, 10, 20},
-            new List<int> {50, 100, 500, 750},
-            new List<bool> {false, false, false, false}
-        ));
-
-        achievements.Add(new AchievementData(
-            "Sprites/QuranIcon",
-            new List<string> {"Penghafal", "Ahli Tafsir", "Hafizh", "Ulama"},
-            "Jumlah surah dengan skor S",
-            0,
-            new List<int> {1, 4, 10, 20},
-            new List<int> {50, 150, 500, 1250},
-            new List<bool> {false, false, false, false}
-        ));
-
-        achievements.Add(new AchievementData(
-            "Sprites/StreakIcon",
-            new List<string> {"Pemula Sempurna", "Penampil Presisi", "Pengeksekusi Ahli", "Perfeksionis"},
-            "Selesai dengan skor S berturut-turut",
-            0,
-            new List<int> {3, 6, 10, 20},
-            new List<int> {50, 100, 350, 600},
-            new List<bool> {false, false, false, false}
-        ));
-
-        achievements.Add(new AchievementData(
-            "Sprites/LoginIcon",
-            new List<string> {"Pengguna", "Pengunjung Harian", "Peserta Konsisten", "Penghuni Setia"},
-            "Login setiap hari berturut-turut",
-            0,
-            new List<int> {3, 7, 14, 30},
-            new List<int> {50, 100, 350, 600},
-            new List<bool> {false, false, false, false}
-        ));
-    }
-
+    
     private void OnEnable() {
+        achievements = achievementDatabase.achievements;
+        
         // Clear the badge parent
         foreach (Transform child in badgetParent) {
             Destroy(child.gameObject);
@@ -108,6 +28,8 @@ public class Achievement : MonoBehaviour
         GameObject horizontalLayout = Instantiate(horizontalLayoutPrefab, badgetParent);
         for (int i = 0; i < achievements.Count; i++)
         {
+            int index = i;
+
             if (i % 2 == 0 && i != 0) {
                 horizontalLayout = Instantiate(horizontalLayoutPrefab, badgetParent);
             }
@@ -142,6 +64,7 @@ public class Achievement : MonoBehaviour
 
             GameObject badge = Instantiate(badgePrefab, horizontalLayout.transform);
             badge.GetComponent<Badge>().SetBadgeData(
+                achievements[i].key,
                 achievements[i].icon,
                 iconColor,
                 achievements[i].title[badgeStageIndex],
@@ -151,9 +74,40 @@ public class Achievement : MonoBehaviour
                 achievements[i].goal[badgeStageIndex],
                 achievements[i].isClaimed[badgeStageIndex]
             );
+
+            badge.GetComponent<Badge>().ClaimButton.onClick.AddListener(() => ClaimAchievement(achievements[index].key));
         }
 
         // Create empty game object to fill the last row
         Instantiate(emptyObjectPrefab, badgetParent);
-    }   
+    }
+
+    public void ClaimAchievement(string key)
+    {
+        for (int i = 0; i < achievements.Count; i++)
+        {
+            if (achievements[i].key == key)
+            {
+                for (int j = 0; j < achievements[i].isClaimed.Count; j++)
+                {
+                    if (achievements[i].isClaimed[j] == true) continue;
+
+                    if (achievements[i].progress >= achievements[i].goal[j])
+                    {
+                        achievements[i].isClaimed[j] = true;
+
+                        string[] tempData = PlayerPrefs.GetString(achievements[i].key + KEY_CLAIMED, "0:0:0:0").Split(':');
+                        tempData[j] = "1";
+                        PlayerPrefs.SetString(achievements[i].key + KEY_CLAIMED, string.Join(":", tempData));
+
+                        topBar.GainCoins(achievements[i].rewards[j]);
+                        PlayerPrefs.Save();
+                        break;
+                    }
+                }
+            }
+        }
+
+        OnEnable();
+    }
 }
