@@ -22,14 +22,23 @@ public class QuestionDatabase : MonoBehaviour
     // List to store your questions
     public Dictionary<int, List<Question>> questionsType_1 = new Dictionary<int, List<Question>>();
     public Dictionary<int, List<Question>> questionsType_2 = new Dictionary<int, List<Question>>();
+    public Dictionary<int, Dictionary<int, string>> questionsType_3 = new Dictionary<int, Dictionary<int, string>>();
 
     // Shared array of options
     public Dictionary<int, string[]> optionsType_1 = new Dictionary<int, string[]>();
     public Dictionary<int, string[]> optionsType_2 = new Dictionary<int, string[]>();
+    public Dictionary<int, List<string>> optionsType_3 = new Dictionary<int, List<string>>();
+
+    public Dictionary<int, string> surahName = new Dictionary<int, string> {
+        { 1, "Al-Fatihah" },
+        { 112, "Al-Ihklas" },
+        { 113, "Al-Falaq" },
+        { 114, "An-Nas" }
+    };
 
     void Awake()
     {
-        // ~~ Type 1 Questions ~~
+        // ~~~~~~~~~~~~~~~~~~~~~~ Type 1 Questions ~~~~~~~~~~~~~~~~~~~~~~
         // Populate the question database with sample questions and options
         questionsType_1.Add(1, new List<Question>{
             new Question("Apa arti Al-Ikhlas", "dalam Bahasa Indonesia?", 0), // ayat 1
@@ -123,7 +132,7 @@ public class QuestionDatabase : MonoBehaviour
             "Tauhid", "Zakat", "Shalat", "Puasa", // Question 13, answer index 48
             "30", "27", "28", "29", // Question 14, answer index 52
             "2", "1", "3", "4", // Question 15, answer index 56
-            "Keesaan Allah", "Atribut belask kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 16, answer index 60
+            "Keesaan Allah", "Atribut belas kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 16, answer index 60
             "Ketulusan", "Kunci", "Kriteria", "Cahaya", // Question 17, answer index 64
             "3", "1", "2", "4", // Question 18, answer index 68
             "Muhammad", "Ibrahim", "Isa", "Musa", // Question 19, answer index 72
@@ -137,7 +146,7 @@ public class QuestionDatabase : MonoBehaviour
             "Tauhid", "Zakat", "Shalat", "Puasa", // Question 4, answer index 12
             "30", "27", "28", "29", // Question 5, answer index 16
             "9", "10", "11", "12", // Question 6, answer index 9
-            "Keesaan Allah", "Atribut belask kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 7, answer index 24
+            "Keesaan Allah", "Atribut belas kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 7, answer index 24
             "Ketulusan", "Kunci", "Kriteria", "Cahaya", // Question 8, answer index 28
             "13", "14", "15", "16", // Question 9, answer index 5
             "Muhammad", "Ibrahim", "Isa", "Musa", // Question 10, answer index 36
@@ -151,7 +160,7 @@ public class QuestionDatabase : MonoBehaviour
             "Tauhid", "Zakat", "Shalat", "Puasa", // Question 4, answer index 12
             "30", "27", "28", "29", // Question 5, answer index 16
             "9", "10", "11", "12", // Question 6, answer index 9
-            "Keesaan Allah", "Atribut belask kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 7, answer index 24
+            "Keesaan Allah", "Atribut belas kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 7, answer index 24
             "Ketulusan", "Kunci", "Kriteria", "Cahaya", // Question 8, answer index 28
             "13", "14", "15", "16", // Question 9, answer index 5
             "Muhammad", "Ibrahim", "Isa", "Musa", // Question 10, answer index 36
@@ -168,13 +177,13 @@ public class QuestionDatabase : MonoBehaviour
             "Tauhid", "Zakat", "Shalat", "Puasa", // Question 4, answer index 12
             "30", "27", "28", "29", // Question 5, answer index 16
             "9", "10", "11", "12", // Question 6, answer index 9
-            "Keesaan Allah", "Atribut belask kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 7, answer index 24
+            "Keesaan Allah", "Atribut belas kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 7, answer index 24
             "Ketulusan", "Kunci", "Kriteria", "Cahaya", // Question 8, answer index 28
             "13", "14", "15", "16", // Question 9, answer index 5
             "Muhammad", "Ibrahim", "Isa", "Musa", // Question 10, answer index 36
             "Politesime", "Ateisme", "Agnotisisme", "Pantheisme", // Question 11, answer index 40
             "17", "18", "19", "20", // Question 12, answer index 4
-            "Keesaan Allah", "Atribut belask kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 13, answer index 48
+            "Keesaan Allah", "Atribut belas kasih Allah", "Pentingnya silathurami", "Pentingnya shalat", // Question 13, answer index 48
             "Ketulusan", "Kunci", "Kriteria", "Cahaya", // Question 14, answer index 52
             "3", "1", "2", "4", // Question 15, answer index 56
             "Muhammad", "Ibrahim", "Isa", "Musa", // Question 16, answer index 60
@@ -182,7 +191,7 @@ public class QuestionDatabase : MonoBehaviour
             "4", "1", "2", "3", // Question 18, answer index 68
         });
 
-        // ~~ Type 2 Questions ~~
+        // ~~~~~~~~~~~~~~~~~~~~~~ Type 2 Questions ~~~~~~~~~~~~~~~~~~~~~~
         // Populate the question database with sample questions and options
         questionsType_2.Add(1, new List<Question>{
             new Question("What is the capital of France?", "CasualGameSounds/DM-CGS-49", 0),
@@ -293,6 +302,31 @@ public class QuestionDatabase : MonoBehaviour
             "Yen", "Dollar", "Euro", "Pound", // Question 10, answer index 36
             "Yellow", "Red", "Blue", "Green", // Question 9, answer index 40
             "Yen", "Dollar", "Euro", "Pound", // Question 10, answer index 44
+        });
+
+        // ~~~~~~~~~~~~~~~~~~~~~~ Type 3 Questions (Matching) ~~~~~~~~~~~~~~~~~~~~~~
+        // Questions
+        questionsType_3.Add(112, new Dictionary<int, string>{
+            { 0, "Ayat 1" },
+            { 1, "Arti" },
+            { 2, "Ayat 2" },
+            { 3, "Menekankan Konsep" },
+            { 4, "Ayat 3" },
+            { 5, "Pesan Utama" },
+            { 6, "Ayat 4" },
+            { 7, "Sering Disebut" },
+        });
+
+        // Options
+        optionsType_3.Add(112, new List<string> {
+            { "قُلْ هُوَ ٱللَّهُ أَحَدٌ" } ,
+            { "Keihklasan" },
+            { "ٱللَّهُ ٱلصَّمَدُ" },
+            { "Tauhid" },
+            { "لَمْ يَلِدْ وَلَمْ يُولَدْ" },
+            { "Keesaan Allah" },
+            {  "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ" },
+            {  "Ketulusan" },
         });
     }
 

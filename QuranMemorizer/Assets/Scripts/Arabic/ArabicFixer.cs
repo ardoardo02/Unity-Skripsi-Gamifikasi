@@ -8,6 +8,7 @@ public class ArabicFixer : MonoBehaviour
     public string fixedText;
     public bool ShowTashkeel;
     public bool UseHinduNumbers;
+    public string tempSaveData;
 
     Text textComponent;
 
