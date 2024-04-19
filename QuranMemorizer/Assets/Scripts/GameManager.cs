@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     int matchCounter = 0;
     bool isWrongAnswer = false;
 
+    List<int> chooseMatching_Answer = new List<int>();
+    List<int> chooseMatching_PlayerAnswer = new List<int>();
+
     [SerializeField] QuestionDatabase questionDatabase;
     [SerializeField] Button submitButton;
     [SerializeField] TMP_Text scoreText;
@@ -84,6 +87,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text secondaryQuestionText3;
     [SerializeField] List<Text> topAnswerTexts;
     [SerializeField] List<Text> bottomAnswerTexts;
+
+    [Header("Question Type 4")]
+    [SerializeField] GameObject questionType4;
+    [SerializeField] List<GameObject> answerPlaceHolder;
+    [SerializeField] List<Text> answerTexts4;
 
     // Keys for PlayerPrefs
     const string KEY_SURAH_NUMBER = "SURAH_NUMBER";
@@ -142,6 +150,12 @@ public class GameManager : MonoBehaviour
             topAnswerTexts[i].GetComponentInParent<Button>().onClick.AddListener(() => OnType3_AnswerButtonClicked(index, true));
             bottomAnswerTexts[i].GetComponentInParent<Button>().onClick.AddListener(() => OnType3_AnswerButtonClicked(index, false));
         }
+
+        for (int i = 0; i < answerTexts4.Count; i++) { // type 4
+            int index = i;
+            answerTexts4[i].GetComponentInParent<Button>().onClick.AddListener(() => OnType4_answerButtonClicked(index));
+            answerPlaceHolder[i].GetComponent<Button>().onClick.AddListener(() => OnType4_removeAnswerButtonClicked(index));
+        }
         
         audioButton2.onClick.AddListener(PlayAudioQuestion2); // audio button for type 2
         submitButton.onClick.AddListener(OnSubmitButtonClicked); // submit button
@@ -167,6 +181,10 @@ public class GameManager : MonoBehaviour
         questionType1.SetActive(false);
         questionType2.SetActive(false);
         questionType3.SetActive(false);
+        questionType4.SetActive(false);
+
+        foreach (var item in answerPlaceHolder) 
+            item.SetActive(false);
 
         yield return new WaitForSeconds(1);
 
@@ -179,15 +197,20 @@ public class GameManager : MonoBehaviour
         loadingPanel.SetActive(false);
     }
 
+
+
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GET QUESTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void GetQuestion() {
         // Randomly select a question type
         int tempType = 0;
         while (tempType == selectedQuestionType || tempType == 0) {
-            tempType = Random.Range(1, 4);
+            tempType = Random.Range(1, 5);
         }
         selectedQuestionType = tempType;
 
-        // selectedQuestionType = 3;
+        // selectedQuestionType = 4;
 
         switch (selectedQuestionType) {
             case 1:
@@ -198,6 +221,9 @@ public class GameManager : MonoBehaviour
                 break;
             case 3:
                 GetQuestionType3();
+                break;
+            case 4:
+                GetQuestionType4();
                 break;
         }
 
@@ -328,7 +354,61 @@ public class GameManager : MonoBehaviour
         questionType3.SetActive(true);
     }
 
-    public void OnAnswerButtonClicked(int answerIndex) {
+    void GetQuestionType4() {
+        selectedQuestionType = 4;
+
+        int questionBasedOnAyah = currentAyah;
+        // if (questionBasedOnAyah > questionDatabase.questionsType_4[currentSurah].Count - 1) {
+        //     questionBasedOnAyah = questionDatabase.questionsType_4[currentSurah].Count - 1;
+        // }
+
+        // Randomly select a question from the database
+        var currentLevel = questionDatabase.questionsType_4[currentSurah];
+        var currentQuestion = currentLevel[Random.Range(0, questionBasedOnAyah)];
+
+        foreach (int item in currentQuestion) {
+            chooseMatching_Answer.Add(item);
+        }
+        chooseMatching_PlayerAnswer.Add(chooseMatching_Answer[0]);
+
+        // Display question text
+        GetChooseMatchPlaceholder();
+
+
+        // Get options
+        List<int> currentOptions = new List<int>();
+
+        for (int i = 0; i < answerTexts4.Count; i++) { // Get the correct answers and fill the rest with random answers
+            if (i != 0 && i < chooseMatching_Answer.Count) {
+                currentOptions.Add(chooseMatching_Answer[i]);
+            } else {
+                while (true) {
+                    int randomOption = Random.Range(0, questionDatabase.optionsType_4[currentSurah].Count);
+                    if (!currentOptions.Contains(randomOption) && randomOption != chooseMatching_Answer[0]) {
+                        currentOptions.Add(randomOption);
+                        break;
+                    }
+                }
+            }
+        }
+
+        currentOptions = currentOptions.OrderBy(x => UnityEngine.Random.value).ToList(); // Use OrderBy with a random value to shuffle the list
+
+        for (int i = 0; i < answerTexts4.Count; i++) { // Display the options
+            answerTexts4[i].GetComponent<ArabicFixer>().fixedText = questionDatabase.optionsType_4[currentSurah].ElementAt(currentOptions[i]);
+            answerTexts4[i].GetComponent<ArabicFixer>().tempSaveData = currentOptions[i].ToString();
+        }
+
+        questionType4.SetActive(true);
+    }
+
+
+
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ON BUTTON CLICKED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+    public void OnAnswerButtonClicked(int answerIndex) // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TYPE 1 AND 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    {
         switch (selectedQuestionType) {
             case 1:
                 // Store the clicked answer
@@ -363,7 +443,7 @@ public class GameManager : MonoBehaviour
         submitButton.interactable = true;
     }
 
-    public void OnType3_AnswerButtonClicked(int answerIndex, bool isTop)
+    public void OnType3_AnswerButtonClicked(int answerIndex, bool isTop) // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TYPE 3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     {
         if (isTop) {
             if (topMatchingAnswer != null) { // Reset the color of the previous top 
@@ -512,7 +592,36 @@ public class GameManager : MonoBehaviour
         bottomText.GetComponentInParent<Button>().interactable = true;
     }
 
-    public void OnSubmitButtonClicked() {
+    public void OnType4_answerButtonClicked(int answerIndex) { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TYPE 4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if (chooseMatching_PlayerAnswer.Count >= 8) return;
+
+        chooseMatching_PlayerAnswer.Add(int.Parse(answerTexts4[answerIndex].GetComponent<ArabicFixer>().tempSaveData));
+        answerTexts4[answerIndex].GetComponentInParent<Button>().interactable = false;
+
+        GetChooseMatchPlaceholder();
+
+        if (!submitButton.interactable) submitButton.interactable = true;
+    }
+
+    public void OnType4_removeAnswerButtonClicked(int answerIndex) {
+        if (chooseMatching_PlayerAnswer.Count < 1) return;
+
+        int tempIndex = chooseMatching_PlayerAnswer[answerIndex];
+        chooseMatching_PlayerAnswer.RemoveAt(answerIndex);
+        
+        for (int i = 0; i < answerTexts4.Count; i++) {
+            if (answerTexts4[i].GetComponent<ArabicFixer>().tempSaveData == tempIndex.ToString()) {
+                answerTexts4[i].GetComponentInParent<Button>().interactable = true;
+                break;
+            }
+        }
+
+        GetChooseMatchPlaceholder();
+
+        if (chooseMatching_PlayerAnswer.Count == 1) submitButton.interactable = false;
+    }
+
+    public void OnSubmitButtonClicked() { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SUBMIT BUTTON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         StartCoroutine(OnSubmitButtonClicked_Coroutine());
     }
 
@@ -520,10 +629,31 @@ public class GameManager : MonoBehaviour
         submitButton.interactable = false;
         ColorBlock colors = submitButton.colors;
 
+        // Disable the button
+        switch (selectedQuestionType) {
+            case 1:
+                for (int i = 0; i < answerTexts1.Count; i++) {
+                    answerTexts1[i].GetComponentInParent<Button>().interactable = false;
+                }
+                break;
+            case 2:
+                for (int i = 0; i < answerTexts2.Count; i++) {
+                    answerTexts2[i].GetComponentInParent<Button>().interactable = false;
+                }
+                break;
+            case 4:
+                for (int i = 0; i < answerTexts4.Count; i++) {
+                    answerTexts4[i].GetComponentInParent<Button>().interactable = false;
+                    answerPlaceHolder[i].GetComponent<Button>().interactable = false;
+                }
+                break;
+        }
+
         // Check if the clicked answer is the correct answer
         if (
             ((selectedQuestionType == 1 || selectedQuestionType == 2) && clickedMultipleChoiceAnswer == multipleChoiceAnswer) // type 1 and 2
             || (selectedQuestionType == 3 && !isWrongAnswer) // type 3
+            || (selectedQuestionType == 4 && chooseMatching_Answer.SequenceEqual(chooseMatching_PlayerAnswer)) // type 4
             ) {
             colors.disabledColor = new Color32(100, 193, 126, 255); // Correct answer color
             totalRightAnswers++;
@@ -552,12 +682,14 @@ public class GameManager : MonoBehaviour
         colors.disabledColor = new Color32(185, 185, 185, 255);
         submitButton.colors = colors;
 
-        // Reset the color of all answers
+        // Reset the color of all answers and enable the buttons
         switch (selectedQuestionType) {
             case 1:
                 for (int i = 0; i < answerTexts1.Count; i++) {
                     answerTexts1[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
                     answerTexts1[i].color = new Color32(51, 51, 51, 255);
+
+                    answerTexts1[i].GetComponentInParent<Button>().interactable = true;
                 }
                 questionType1.SetActive(false);
                 break;
@@ -565,6 +697,8 @@ public class GameManager : MonoBehaviour
                 for (int i = 0; i < answerTexts2.Count; i++) {
                     answerTexts2[i].GetComponentInParent<Image>().color = new Color32(255, 255, 255, 255);
                     answerTexts2[i].color = new Color32(51, 51, 51, 255);
+
+                    answerTexts2[i].GetComponentInParent<Button>().interactable = true;
                 }
                 questionType2.SetActive(false);
                 break;
@@ -578,6 +712,13 @@ public class GameManager : MonoBehaviour
                 }
                 questionType3.SetActive(false);
                 break;
+            case 4:
+                for (int i = 0; i < answerTexts4.Count; i++) {
+                    answerTexts4[i].GetComponentInParent<Button>().interactable = true;
+                    if (i != 0) answerPlaceHolder[i].GetComponent<Button>().interactable = true;
+                }
+                questionType4.SetActive(false);
+                break;
         }
 
         // Reset state
@@ -588,6 +729,9 @@ public class GameManager : MonoBehaviour
         bottomMatchingAnswer = null;
         matchCounter = 0;
         isWrongAnswer = false;
+
+        chooseMatching_Answer.Clear();
+        chooseMatching_PlayerAnswer.Clear();
                 
         // Update the question number
         currentQuestionNumber++;
@@ -601,6 +745,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OTHERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void SetUpFinishPanel() {
         // Getting keys for high score and grade
         string highScoreKey = KEY_HIGHSCORE + currentSurah + "_" + currentAyah;
@@ -688,6 +837,25 @@ public class GameManager : MonoBehaviour
             }
         } else {
             Debug.Log("Audio clip is null");
+        }
+    }
+
+    void GetChooseMatchPlaceholder() {
+        // Reset the placeholder
+        foreach (var item in answerPlaceHolder) 
+            item.SetActive(false);
+
+        // Get options
+        var currentOptions = questionDatabase.optionsType_4[currentSurah];
+
+        // Display question text
+        for (int i = 0; i < chooseMatching_PlayerAnswer.Count; i++) {
+            ArabicFixer fixer = answerPlaceHolder[i].GetComponentInChildren<ArabicFixer>();
+
+            fixer.fixedText = currentOptions.ElementAt(chooseMatching_PlayerAnswer[i]);
+            fixer.tempSaveData = chooseMatching_PlayerAnswer[i].ToString();
+
+            answerPlaceHolder[i].SetActive(true);
         }
     }
 

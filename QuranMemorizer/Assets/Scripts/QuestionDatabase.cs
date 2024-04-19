@@ -23,11 +23,13 @@ public class QuestionDatabase : MonoBehaviour
     public Dictionary<int, List<Question>> questionsType_1 = new Dictionary<int, List<Question>>();
     public Dictionary<int, List<Question>> questionsType_2 = new Dictionary<int, List<Question>>();
     public Dictionary<int, Dictionary<int, string>> questionsType_3 = new Dictionary<int, Dictionary<int, string>>();
+    public Dictionary<int, List<int[]>> questionsType_4 = new Dictionary<int, List<int[]>>();
 
     // Shared array of options
     public Dictionary<int, string[]> optionsType_1 = new Dictionary<int, string[]>();
     public Dictionary<int, string[]> optionsType_2 = new Dictionary<int, string[]>();
     public Dictionary<int, List<string>> optionsType_3 = new Dictionary<int, List<string>>();
+    public Dictionary<int, List<string>> optionsType_4 = new Dictionary<int, List<string>>();
 
     public Dictionary<int, string> surahName = new Dictionary<int, string> {
         { 1, "Al-Fatihah" },
@@ -191,6 +193,10 @@ public class QuestionDatabase : MonoBehaviour
             "4", "1", "2", "3", // Question 18, answer index 68
         });
 
+
+
+
+
         // ~~~~~~~~~~~~~~~~~~~~~~ Type 2 Questions ~~~~~~~~~~~~~~~~~~~~~~
         // Populate the question database with sample questions and options
         questionsType_2.Add(1, new List<Question>{
@@ -304,6 +310,10 @@ public class QuestionDatabase : MonoBehaviour
             "Yen", "Dollar", "Euro", "Pound", // Question 10, answer index 44
         });
 
+
+
+
+
         // ~~~~~~~~~~~~~~~~~~~~~~ Type 3 Questions (Matching) ~~~~~~~~~~~~~~~~~~~~~~
         // Questions
         questionsType_3.Add(112, new Dictionary<int, string>{
@@ -327,6 +337,26 @@ public class QuestionDatabase : MonoBehaviour
             { "Keesaan Allah" },
             {  "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ" },
             {  "Ketulusan" },
+        });
+
+
+
+
+        // ~~~~~~~~~~~~~~~~~~~~~~ Type 4 Questions (Continue) ~~~~~~~~~~~~~~~~~~~~~~
+        // Questions
+        questionsType_4.Add(112, new List<int[]>{
+            new int[] { 0, 1, 2 }, // ayat 1
+            new int[] { 3, 4 }, // ayat 2
+            new int[] { 5, 6, 7, 8 }, // ayat 3
+            new int[] { 9, 10, 11 }, // ayat 4
+        });
+
+        // Options
+        optionsType_4.Add(112, new List<string> {
+            "قُلْ", "هُوَ ٱللَّهُ", "أَحَدٌ", // ayat 1 (0, 1, 2)
+            "ٱللَّهُ", "ٱلصَّمَدُ", // ayat 2 (3, 4)
+            "لَمْ", "يَلِدْ", "وَلَمْ", "يُولَدْ", // ayat 3 (5, 6, 7, 8)
+            "وَلَمْ يَكُن لَّهُۥ", "كُفُوًا", "اَحَدٌ", // ayat 4 (9, 10, 11)
         });
     }
 
