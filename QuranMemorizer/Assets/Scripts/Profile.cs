@@ -117,6 +117,7 @@ public class Profile : MonoBehaviour
     }
 
     public void SaveUsername() {
+        AudioManager.instance.PlaySFX("Click");
         string newUsername = editUsernameInput.text;
 
         if (PlayerPrefs.GetString(KEY_USERNAME) != newUsername) {
@@ -136,6 +137,7 @@ public class Profile : MonoBehaviour
     }
 
     public void ChangeAvatar() {
+        AudioManager.instance.PlaySFX("Click");
         string currentCharacter = PlayerPrefs.GetString(KEY_CHARACTER);
 
         if (currentCharacter == "girl") {

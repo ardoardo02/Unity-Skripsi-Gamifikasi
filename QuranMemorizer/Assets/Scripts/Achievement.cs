@@ -95,6 +95,7 @@ public class Achievement : MonoBehaviour
                     if (achievements[i].progress >= achievements[i].goal[j])
                     {
                         achievements[i].isClaimed[j] = true;
+                        AudioManager.instance.PlaySFX("ClickConfirm");
 
                         string[] tempData = PlayerPrefs.GetString(achievements[i].key + KEY_CLAIMED, "0:0:0:0").Split(':');
                         tempData[j] = "1";

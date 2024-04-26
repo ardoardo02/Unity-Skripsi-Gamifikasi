@@ -50,6 +50,7 @@ public class Intro : MonoBehaviour
     // update character
     public void OnCharacterSelected(string character)
     {
+        AudioManager.instance.PlaySFX("Click");
         CharacterSelected = character;
 
         // update boy button's normal color if boy is selected
@@ -96,7 +97,8 @@ public class Intro : MonoBehaviour
     }
 
     public void OnSubmit()
-    {
+    {   
+        AudioManager.instance.PlaySFX("ClickConfirm");
         PlayerPrefs.SetString(KEY_CHARACTER, CharacterSelected);
         PlayerPrefs.SetString(KEY_USERNAME, UsernameInput.text);
 

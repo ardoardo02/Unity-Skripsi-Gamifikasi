@@ -35,6 +35,7 @@ public class Mission : MonoBehaviour
     }
 
     public void ClaimReward() {
+        AudioManager.instance.PlaySFX("ClickConfirm");
         claimButton.interactable = false;
         claimButton.GetComponentInChildren<TMP_Text>().gameObject.SetActive(false);
     }

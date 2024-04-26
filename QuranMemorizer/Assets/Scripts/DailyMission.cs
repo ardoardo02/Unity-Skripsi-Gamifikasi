@@ -206,6 +206,7 @@ public class DailyMission : MonoBehaviour
 
         // Claim the mission reward
         mission.isClaimed = true;
+        AudioManager.instance.PlaySFX("ClickConfirm");
         PlayerPrefs.SetInt(key + KEY_CLAIMED, 1); // Save the claimed status to PlayerPrefs
         PlayerPrefs.SetInt(KEY_DAILY_MISSION, PlayerPrefs.GetInt(KEY_DAILY_MISSION, 0) + 1); // Increment the daily mission achievement progress
         topBar.GainCoins(mission.reward); // Gain the mission reward

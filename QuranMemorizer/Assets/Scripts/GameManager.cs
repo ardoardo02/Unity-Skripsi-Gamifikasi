@@ -93,6 +93,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<GameObject> answerPlaceHolder;
     [SerializeField] List<Text> answerTexts4;
 
+    [Header("Question Type 5")]
+    [SerializeField] GameObject questionType5;
+    [SerializeField] Text mainQuestionText5;
+    [SerializeField] AudioSource audioQuestion5;
+    [SerializeField] AudioSource audioPlayback5;
+    [SerializeField] Button answerButton5;
+    [SerializeField] Sprite micIcon;
+    Button audioButton5;
+    Button playbackButton5;
+
     // Keys for PlayerPrefs
     const string KEY_SURAH_NUMBER = "SURAH_NUMBER";
     const string KEY_AYAH_NUMBER = "AYAH_NUMBER";
@@ -126,6 +136,8 @@ public class GameManager : MonoBehaviour
         streakText.text = "0";
         
         audioButton2 = audioQuestion2.GetComponent<Button>();
+        audioButton5 = audioQuestion5.GetComponent<Button>();
+        playbackButton5 = audioPlayback5.GetComponent<Button>();
 
         // Add the answer texts to the list
         answerTexts1.Add(answerText1_1);
@@ -157,7 +169,9 @@ public class GameManager : MonoBehaviour
             answerPlaceHolder[i].GetComponent<Button>().onClick.AddListener(() => OnType4_removeAnswerButtonClicked(index));
         }
         
-        audioButton2.onClick.AddListener(PlayAudioQuestion2); // audio button for type 2
+        audioButton2.onClick.AddListener(() => PlayAudioQuestion("2")); // audio button for type 2
+        audioButton5.onClick.AddListener(() => PlayAudioQuestion("5")); // audio button for type 5
+        playbackButton5.onClick.AddListener(() => PlayAudioQuestion("5_playback")); // playback button for type 5
         submitButton.onClick.AddListener(OnSubmitButtonClicked); // submit button
     }
 
@@ -182,6 +196,7 @@ public class GameManager : MonoBehaviour
         questionType2.SetActive(false);
         questionType3.SetActive(false);
         questionType4.SetActive(false);
+        questionType5.SetActive(false);
 
         foreach (var item in answerPlaceHolder) 
             item.SetActive(false);
@@ -195,6 +210,9 @@ public class GameManager : MonoBehaviour
         timer = timerDuration;
         timerBar.fillAmount = 1;
         loadingPanel.SetActive(false);
+        
+        int randomAudio = Random.Range(1, 4);
+        AudioManager.instance.PlayMusic("Gameplay" + randomAudio);
     }
 
 
@@ -203,14 +221,24 @@ public class GameManager : MonoBehaviour
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ GET QUESTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void GetQuestion() {
-        // Randomly select a question type
         int tempType = 0;
-        while (tempType == selectedQuestionType || tempType == 0) {
-            tempType = Random.Range(1, 5);
+        if (currentQuestionNumber < 5) {
+            // Get the question type based on the current question number
+            tempType = currentQuestionNumber;
+        }
+        else if (currentQuestionNumber == totalQuestions) {
+            // Get the last question type
+            tempType = 5;
+        }
+        else {
+            // Randomly select a question type 1 to 4
+            while (tempType == selectedQuestionType || tempType == 0) {
+                tempType = Random.Range(1, 5);
+            }
         }
         selectedQuestionType = tempType;
 
-        // selectedQuestionType = 4;
+        // selectedQuestionType = 5;
 
         switch (selectedQuestionType) {
             case 1:
@@ -224,6 +252,9 @@ public class GameManager : MonoBehaviour
                 break;
             case 4:
                 GetQuestionType4();
+                break;
+            case 5:
+                GetQuestionType5();
                 break;
         }
 
@@ -303,6 +334,7 @@ public class GameManager : MonoBehaviour
         bool isAnswerSet = false;
         for (int i = 0; i < answerTexts2.Count; i++) {
             answerTexts2[i].GetComponent<ArabicFixer>().fixedText = randomizedOptions[i];
+            answerTexts2[i].GetComponent<ArabicFixer>().tempSaveData = randomizedOptions[i];
             if (!isAnswerSet && randomizedOptions[i] == multipleChoiceAnswer) {
                 isAnswerSet = true;
             }
@@ -312,6 +344,7 @@ public class GameManager : MonoBehaviour
         if (!isAnswerSet) {
             int randomAnswerIndex = Random.Range(0, 4);
             answerTexts2[randomAnswerIndex].GetComponent<ArabicFixer>().fixedText = multipleChoiceAnswer;
+            answerTexts2[randomAnswerIndex].GetComponent<ArabicFixer>().tempSaveData = multipleChoiceAnswer;
         }
 
         questionType2.SetActive(true);
@@ -402,6 +435,22 @@ public class GameManager : MonoBehaviour
         questionType4.SetActive(true);
     }
 
+    void GetQuestionType5() {
+        selectedQuestionType = 5;
+
+        var currentLevel = questionDatabase.questionsType_5[currentSurah];
+        var currentQuestion = currentLevel[currentAyah - 1];
+
+        // Display question text
+        mainQuestionText5.GetComponent<ArabicFixer>().fixedText = currentQuestion;
+
+        // Set the audio clip
+        var currentAudio = questionDatabase.optionsType_5[currentSurah];
+        audioQuestion5.clip = Resources.Load<AudioClip>(currentAudio[currentAyah - 1]);
+
+        questionType5.SetActive(true);
+    }
+
 
 
 
@@ -409,6 +458,7 @@ public class GameManager : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ON BUTTON CLICKED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     public void OnAnswerButtonClicked(int answerIndex) // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TYPE 1 AND 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     {
+        AudioManager.instance.PlaySFX("Click");
         switch (selectedQuestionType) {
             case 1:
                 // Store the clicked answer
@@ -426,7 +476,7 @@ public class GameManager : MonoBehaviour
                 break;
             case 2:
                 // Store the clicked answer
-                clickedMultipleChoiceAnswer = answerTexts2[answerIndex - 1].text;
+                clickedMultipleChoiceAnswer = answerTexts2[answerIndex - 1].GetComponent<ArabicFixer>().tempSaveData;
 
                 // Reset the color of all answers
                 for (int i = 0; i < answerTexts2.Count; i++) {
@@ -445,6 +495,7 @@ public class GameManager : MonoBehaviour
 
     public void OnType3_AnswerButtonClicked(int answerIndex, bool isTop) // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TYPE 3 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     {
+        AudioManager.instance.PlaySFX("Click");
         if (isTop) {
             if (topMatchingAnswer != null) { // Reset the color of the previous top 
                 foreach (var text in topAnswerTexts) {
@@ -593,6 +644,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnType4_answerButtonClicked(int answerIndex) { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TYPE 4 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        AudioManager.instance.PlaySFX("Click");
         if (chooseMatching_PlayerAnswer.Count >= 8) return;
 
         chooseMatching_PlayerAnswer.Add(int.Parse(answerTexts4[answerIndex].GetComponent<ArabicFixer>().tempSaveData));
@@ -604,6 +656,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnType4_removeAnswerButtonClicked(int answerIndex) {
+        AudioManager.instance.PlaySFX("Click");
         if (chooseMatching_PlayerAnswer.Count < 1) return;
 
         int tempIndex = chooseMatching_PlayerAnswer[answerIndex];
@@ -647,6 +700,9 @@ public class GameManager : MonoBehaviour
                     answerPlaceHolder[i].GetComponent<Button>().interactable = false;
                 }
                 break;
+            case 5:
+                answerButton5.interactable = false;
+                break;
         }
 
         // Check if the clicked answer is the correct answer
@@ -654,7 +710,9 @@ public class GameManager : MonoBehaviour
             ((selectedQuestionType == 1 || selectedQuestionType == 2) && clickedMultipleChoiceAnswer == multipleChoiceAnswer) // type 1 and 2
             || (selectedQuestionType == 3 && !isWrongAnswer) // type 3
             || (selectedQuestionType == 4 && chooseMatching_Answer.SequenceEqual(chooseMatching_PlayerAnswer)) // type 4
+            || (selectedQuestionType == 5 && Random.Range(1, 4) > 1) // type 5
             ) {
+            AudioManager.instance.PlaySFX("Correct");
             colors.disabledColor = new Color32(100, 193, 126, 255); // Correct answer color
             totalRightAnswers++;
 
@@ -668,6 +726,7 @@ public class GameManager : MonoBehaviour
             scoreText.text = score.ToString();
          
         } else {
+            AudioManager.instance.PlaySFX("Wrong");
             colors.disabledColor = new Color32(171, 0, 0, 255); // Wrong answer color
 
             // Reset streak
@@ -718,6 +777,11 @@ public class GameManager : MonoBehaviour
                     if (i != 0) answerPlaceHolder[i].GetComponent<Button>().interactable = true;
                 }
                 questionType4.SetActive(false);
+                break;
+            case 5:
+                answerButton5.interactable = true;
+                playbackButton5.interactable = false;
+                questionType5.SetActive(false);
                 break;
         }
 
@@ -825,18 +889,42 @@ public class GameManager : MonoBehaviour
         if (maxStreak >= 5) PlayerPrefs.SetInt(KEY_MISSION_COMBO, PlayerPrefs.GetInt(KEY_MISSION_COMBO, 0) + 1); // daily mission combo
     }
 
-    public void PlayAudioQuestion2() {
-        if (audioQuestion2.clip != null) {
-            Image audioIcon = audioButton2.GetComponent<Image>();
-            if (audioQuestion2.isPlaying) {
-                audioQuestion2.Stop();
+    public void PlayAudioQuestion(string audioName) {
+        AudioSource audio = audioName == "2" ? audioQuestion2 : audioName == "5" ? audioQuestion5 : audioName == "5_playback" ? audioPlayback5 : null;
+        
+        if (audio.clip != null) {
+            Image audioIcon = audio.GetComponent<Image>();
+            if (audio.isPlaying) {
+                audio.Stop();
+                AudioManager.instance.VolumeDownMusic(false);
                 audioIcon.sprite = notPlayingAudioIcon;
             } else {
-                audioQuestion2.Play();
+                AudioManager.instance.VolumeDownMusic(true);
+                audio.Play();
                 audioIcon.sprite = playingAudioIcon;
             }
         } else {
             Debug.Log("Audio clip is null");
+        }
+    }
+
+    public void RecordAudio5(bool isDown) {
+        Image playButtonImage = answerButton5.GetComponent<Image>();
+        AudioSource audio = playbackButton5.GetComponent<AudioSource>();
+
+        if (isDown) {
+            playButtonImage.sprite = playingAudioIcon;
+            AudioManager.instance.VolumeDownMusic(true);
+            audio.clip = Microphone.Start(null, false, 5, 44100);
+        } else {
+            playButtonImage.sprite = micIcon;
+            Microphone.End(null);
+            AudioManager.instance.VolumeDownMusic(false);
+            // audio.clip = SavWav.TrimSilence(audio.clip, 0.01f);
+            // audio.Play();
+
+            if (!playbackButton5.interactable) playbackButton5.interactable = true;
+            if (!submitButton.interactable) submitButton.interactable = true;
         }
     }
 
@@ -864,6 +952,16 @@ public class GameManager : MonoBehaviour
         if (selectedQuestionType == 2) {
             if (!audioQuestion2.isPlaying && audioButton2.GetComponent<Image>().sprite == playingAudioIcon) {
                 audioButton2.GetComponent<Image>().sprite = notPlayingAudioIcon;
+                AudioManager.instance.VolumeDownMusic(false);
+            }
+        } else if (selectedQuestionType == 5) {
+            if (!audioQuestion5.isPlaying && audioButton5.GetComponent<Image>().sprite == playingAudioIcon) {
+                audioButton5.GetComponent<Image>().sprite = notPlayingAudioIcon;
+                AudioManager.instance.VolumeDownMusic(false);
+            }
+            if (!audioPlayback5.isPlaying && playbackButton5.GetComponent<Image>().sprite == playingAudioIcon) {
+                playbackButton5.GetComponent<Image>().sprite = notPlayingAudioIcon;
+                AudioManager.instance.VolumeDownMusic(false);
             }
         }
 

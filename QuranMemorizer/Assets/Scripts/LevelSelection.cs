@@ -187,6 +187,8 @@ public class LevelSelection : MonoBehaviour
 
     void Start()
     {
+        AudioManager.instance.PlayMusic("Lobby");
+
         GetLevels();
     }
 
@@ -249,6 +251,7 @@ public class LevelSelection : MonoBehaviour
     // Show the level data when a level button is clicked
     void ShowLevelData(LevelData level, LevelButton levelButton, RectTransform levelContainerRectTransform)
     {
+        AudioManager.instance.PlaySFX("Click");
         if (selectedLevelButton == levelButton && selectedLevelButtonChild == null){ // if the same level is clicked
             Debug.Log("Level " + level.surahNumber + " is already selected");
             return;
@@ -329,6 +332,7 @@ public class LevelSelection : MonoBehaviour
 
     void ShowChildLevelData(LevelButtonChild levelButtonChild)
     {
+        AudioManager.instance.PlaySFX("Click");
         if (selectedLevelButtonChild == levelButtonChild){
             Debug.Log("Level " + levelButtonChild.TitleText.text + " is already selected");
             return;
@@ -357,11 +361,16 @@ public class LevelSelection : MonoBehaviour
     {
         if (selectedLevelButtonChild == null){
             Debug.Log("Please select a level");
+            AudioManager.instance.PlaySFX("Click");
             return;
         }
+
         PlayerPrefs.SetInt(KEY_SURAH_NUMBER, int.Parse(surahNumberText.text));
         PlayerPrefs.SetInt(KEY_AYAH_NUMBER, int.Parse(selectedLevelButtonChild.TitleText.text.Split(' ')[1]));
         PlayerPrefs.SetInt(KEY_TOTAL_QUESTIONS, selectedLevelButtonChild.TotalQuestions);
+        
+        AudioManager.instance.PlaySFX("ClickOpen");
+
         // load the game scene
         SceneManager.LoadScene("Gameplay");
     }
@@ -376,6 +385,8 @@ public class LevelSelection : MonoBehaviour
 
             levels.Find(level => level.surahNumber == int.Parse(surahNumberText.text)).price = 0; // unlock the level
 
+            AudioManager.instance.PlaySFX("ClickOpen");
+
             GetLevels();
         } else {
             StartCoroutine(NotEnoughCoins());
@@ -386,6 +397,7 @@ public class LevelSelection : MonoBehaviour
     {
         buyButton.interactable = false;
         buyButton.GetComponentInChildren<TMP_Text>().text = "TIDAK CUKUP KOIN";
+        AudioManager.instance.PlaySFX("Click");
         yield return new WaitForSeconds(2);
         buyButton.GetComponentInChildren<TMP_Text>().text = "BELI";
         buyButton.interactable = true;

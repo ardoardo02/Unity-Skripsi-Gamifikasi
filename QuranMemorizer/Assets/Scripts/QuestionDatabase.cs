@@ -24,12 +24,14 @@ public class QuestionDatabase : MonoBehaviour
     public Dictionary<int, List<Question>> questionsType_2 = new Dictionary<int, List<Question>>();
     public Dictionary<int, Dictionary<int, string>> questionsType_3 = new Dictionary<int, Dictionary<int, string>>();
     public Dictionary<int, List<int[]>> questionsType_4 = new Dictionary<int, List<int[]>>();
+    public Dictionary<int, List<string>> questionsType_5 = new Dictionary<int, List<string>>();
 
     // Shared array of options
     public Dictionary<int, string[]> optionsType_1 = new Dictionary<int, string[]>();
     public Dictionary<int, string[]> optionsType_2 = new Dictionary<int, string[]>();
     public Dictionary<int, List<string>> optionsType_3 = new Dictionary<int, List<string>>();
     public Dictionary<int, List<string>> optionsType_4 = new Dictionary<int, List<string>>();
+    public Dictionary<int, List<string>> optionsType_5 = new Dictionary<int, List<string>>();
 
     public Dictionary<int, string> surahName = new Dictionary<int, string> {
         { 1, "Al-Fatihah" },
@@ -216,16 +218,14 @@ public class QuestionDatabase : MonoBehaviour
             new Question("What is the currency of Japan?", "CasualGameSounds/DM-CGS-49", 52)
         });
         questionsType_2.Add(112, new List<Question>{
-            new Question("Berikut ini merupakan bunyi ayat?", "CasualGameSounds/DM-CGS-49", 0),
-            new Question("Berikut ini merupakan potongan ayat?", "CasualGameSounds/DM-CGS-49", 4),
-            new Question("Bagaimana cara membaca bunyi berikut ini?", "CasualGameSounds/DM-CGS-49", 8),
-            new Question("Which planet is known as the Red Planet?", "CasualGameSounds/DM-CGS-49", 10),
-            new Question("Who painted the Mona Lisa?", "CasualGameSounds/DM-CGS-49", 16),
-            new Question("Who wrote the famous play Romeo and Juliet?", "CasualGameSounds/DM-CGS-49", 20),
-            new Question("What is the chemical symbol for Water?", "CasualGameSounds/DM-CGS-49", 24),
-            new Question("What is the largest mammal on Earth?", "CasualGameSounds/DM-CGS-49", 28),
-            new Question("Which of the following is NOT a primary color?", "CasualGameSounds/DM-CGS-49", 32),
-            new Question("What is the currency of Japan?", "CasualGameSounds/DM-CGS-49", 36)
+            new Question("Berikut ini merupakan bunyi ayat?", "Audios/112_1", 0),
+            new Question("Bagaimana cara membaca bunyi berikut ini?", "Audios/112_1", 4),
+            new Question("Berikut ini merupakan bunyi ayat?", "Audios/112_2", 1),
+            new Question("Bagaimana cara membaca bunyi berikut ini?", "Audios/112_2", 7),
+            new Question("Berikut ini merupakan bunyi ayat?", "Audios/112_3", 2),
+            new Question("Bagaimana cara membaca bunyi berikut ini?", "Audios/112_3", 20),
+            new Question("Berikut ini merupakan bunyi ayat?", "Audios/112_4", 3),
+            new Question("Bagaimana cara membaca bunyi berikut ini?", "Audios/112_4", 21),
         });
         questionsType_2.Add(113, new List<Question>{
             new Question("What is the capital of France?", "CasualGameSounds/DM-CGS-49", 0),
@@ -272,16 +272,14 @@ public class QuestionDatabase : MonoBehaviour
             "Yen", "Dollar", "Euro", "Pound", // Question 10, answer index 52
         });
         optionsType_2.Add(112, new string[] { 
-            "Paris", "London", "Rome", "Berlin", // Question 1, answer index 0
-            "Japan", "India", "China", "South Korea", // Question 2, answer index 4
-            "Jupiter", "Saturn", "Mars", "Earth", // Question 3, answer index 8
-            "Moon", "Venus", "Mercury", "Sun", // Question 4, answer index 10
-            "Leonardo da Vinci", "Frida Kahlo", "Vincent van Gogh", "Pablo Picasso", // Question 5, answer index 16
-            "William Shakespeare", "Oscar Wilde", "George Bernard Shaw", "Samuel Beckett", // Question 6, answer index 20
-            "H2O", "CO2", "NaCl", "O2", // Question 7, answer index 24
-            "Blue Whale", "Elephant", "Giraffe", "Hippopotamus", // Question 8, answer index 28
-            "Yellow", "Red", "Blue", "Green", // Question 9, answer index 32
-            "Yen", "Dollar", "Euro", "Pound", // Question 10, answer index 36
+            "1", "2", "3", "4", // Question 1, answer index 0
+            "قُلْ هُوَ ٱللَّهُ أَحَدٌ", "بِسْمِ ٱللَّهِ", "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ", "ٱللَّهُ ٱلصَّمَدُ", // Question 2, answer index 4
+            "5", "6", "7", "8", // Question 3, answer index 1
+            "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ", "مَلِكِ ٱلنَّاسِ", "مَـٰلِكِ يَوْمِ ٱلدِّينِ", "لَكُمْ دِينُكُمْ وَلِىَ دِينِ", // Question 4, answer index 7
+            "28", "29", "30", "31", // Question 5, answer index 2
+            "لَمْ يَلِدْ وَلَمْ يُولَدْ", "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ", "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ", "مِن شَرِّ مَا خَلَقَ", // Question 6, answer index 20
+            "15", "20", "25", "10", // Question 7, answer index 3
+            "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ", "وَٱلْعَصْرِ", "إِنَّ ٱلْإِنسَـٰنَ لَفِى خُسْرٍ", "لِإِيلَـٰفِ قُرَيْشٍ", // Question 8, answer index 21
         });
         optionsType_2.Add(113, new string[] { 
             "Paris", "London", "Rome", "Berlin", // Question 1, answer index 0
@@ -357,6 +355,26 @@ public class QuestionDatabase : MonoBehaviour
             "ٱللَّهُ", "ٱلصَّمَدُ", // ayat 2 (3, 4)
             "لَمْ", "يَلِدْ", "وَلَمْ", "يُولَدْ", // ayat 3 (5, 6, 7, 8)
             "وَلَمْ يَكُن لَّهُۥ", "كُفُوًا", "اَحَدٌ", // ayat 4 (9, 10, 11)
+        });
+
+
+
+
+        // ~~~~~~~~~~~~~~~~~~~~~~ Type 5 Questions (Vocal) ~~~~~~~~~~~~~~~~~~~~~~
+        // Questions
+        questionsType_5.Add(112, new List<string>{
+            "قُلْ هُوَ ٱللَّهُ أَحَدٌ", // ayat 1
+            "ٱللَّهُ ٱلصَّمَدُ", // ayat 2
+            "لَمْ يَلِدْ وَلَمْ يُولَدْ", // ayat 3
+            "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ", // ayat 4
+        });
+
+        // Options
+        optionsType_5.Add(112, new List<string> {
+            "Audios/112_1", // ayat 1
+            "Audios/112_2", // ayat 2
+            "Audios/112_3", // ayat 3
+            "Audios/112_4", // ayat 4
         });
     }
 
