@@ -8,4 +8,16 @@ public class UIController : MonoBehaviour
     {
         AudioManager.instance.PlaySFX(name);
     }
+
+    // exit the game
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void ResetPlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+        Application.Quit();
+    }
 }

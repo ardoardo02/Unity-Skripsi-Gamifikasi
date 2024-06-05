@@ -838,11 +838,11 @@ public class GameManager : MonoBehaviour
             if (PlayerPrefs.GetInt(KEY_S_STREAK, 0) > PlayerPrefs.GetInt(KEY_ACH_S_STREAK, 0)) { // achievement s streak
                 PlayerPrefs.SetInt(KEY_ACH_S_STREAK, PlayerPrefs.GetInt(KEY_S_STREAK));
             }
-        } else if (accuracy > 80) {
+        } else if (accuracy >= 80) {
             grade_A.SetActive(true);
             tempCoins = 20;
             tempXP = 40;
-        } else if (accuracy > 60) {
+        } else if (accuracy >= 60) {
             grade_B.SetActive(true);
             tempCoins = 15;
             tempXP = 30;
@@ -851,6 +851,10 @@ public class GameManager : MonoBehaviour
             tempCoins = 10;
             tempXP = 20;
         }
+
+        // Set multiplier on the coins and xp
+        tempCoins = (int)(tempCoins * ((float)totalQuestions/10));
+        tempXP = (int)(tempXP * ((float)totalQuestions/10));
 
         // Set the finish panel texts
         finishScoreText.text = score.ToString();

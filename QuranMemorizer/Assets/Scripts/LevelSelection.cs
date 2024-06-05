@@ -91,8 +91,8 @@ public class LevelSelection : MonoBehaviour
                 12,
                 15,
                 18,
-                23,
-                25
+                21,
+                24
             },
             PlayerPrefs.GetInt(KEY_PRICE + "1", 1500)
         ));
@@ -118,7 +118,7 @@ public class LevelSelection : MonoBehaviour
                 6,
                 10,
                 13,
-                18
+                15
             },
             0
         ));
@@ -145,9 +145,9 @@ public class LevelSelection : MonoBehaviour
             new List<int> { // total questions
                 6,
                 10,
+                13,
                 15,
-                17,
-                20
+                18
             },
             PlayerPrefs.GetInt(KEY_PRICE + "113", 500)
         ));
@@ -177,9 +177,9 @@ public class LevelSelection : MonoBehaviour
                 6,
                 9,
                 12,
-                16,
-                18,
-                22
+                14,
+                17,
+                20
             },
             PlayerPrefs.GetInt(KEY_PRICE + "114", 1000)
         ));
@@ -354,7 +354,7 @@ public class LevelSelection : MonoBehaviour
 
     private string CheckGradeScore(int gradeScore)
     {
-        return gradeScore > 99 ? "S" : gradeScore > 80 ? "A" : gradeScore > 60 ? "B" : gradeScore > 0 ? "C" : "";
+        return gradeScore > 99 ? "S" : gradeScore >= 80 ? "A" : gradeScore >= 60 ? "B" : gradeScore > 0 ? "C" : "";
     }
 
     public void OnStartButtonClicked()
